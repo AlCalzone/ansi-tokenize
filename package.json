@@ -1,7 +1,7 @@
 {
   "name": "ansi-tokenize",
   "version": "0.0.1",
-  "description": "Split a string with ANSI excape codes into individual tokens",
+  "description": "Split a string with ANSI escape codes into individual tokens",
   "author": {
     "name": "AlCalzone",
     "email": "d.griesel@gmx.net"
