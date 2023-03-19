@@ -17,6 +17,9 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "build"
+  ],
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@types/node": "16",
