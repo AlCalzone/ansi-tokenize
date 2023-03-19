@@ -1,26 +1,25 @@
 {
 	"extends": "@tsconfig/node16",
 	"compilerOptions": {
-
+		"noEmit": true,
+		"declaration": false,
 		"module": "Node16",
 		"moduleResolution": "node16",
-
 		// Never emit faulty JS
 		"noEmitOnError": true,
-
 		"outDir": "build/",
 		"removeComments": false,
-
 		// Avoid runtime imports that are unnecessary
 		"ignoreDeprecations": "5.0",
 		"importsNotUsedAsValues": "error",
-
 		// Required for TS debugging
 		"sourceMap": true,
 		"inlineSourceMap": false,
-
 		"preserveWatchOutput": true
 	},
-	"include": ["src/**/*.ts"],
+	"include": [
+		"src/**/*.ts",
+		"test/**/*.ts"
+	],
 	"exclude": []
 }

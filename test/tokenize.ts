@@ -1,7 +1,7 @@
 import ansiStyles from "ansi-styles";
 import test from "ava";
 import chalk from "chalk";
-import { tokenize } from "../src/index.js";
+import { tokenize } from "../src/tokenize.js";
 
 test("splits unformatted strings into characters", (t) => {
 	const str = "foo";
@@ -34,6 +34,7 @@ test("splits into characters and ANSI codes", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.red.open,
+			endCode: ansiStyles.red.close,
 		},
 		{
 			type: "char",
@@ -53,6 +54,7 @@ test("splits into characters and ANSI codes", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.red.close,
+			endCode: ansiStyles.red.close,
 		},
 		{
 			type: "char",
@@ -81,10 +83,12 @@ test("supports fullwidth characters", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.red.open,
+			endCode: ansiStyles.red.close,
 		},
 		{
 			type: "ansi",
 			code: ansiStyles.bgBlueBright.open,
+			endCode: ansiStyles.bgBlueBright.close,
 		},
 		{
 			type: "char",
@@ -99,14 +103,17 @@ test("supports fullwidth characters", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.bgBlueBright.close,
+			endCode: ansiStyles.bgBlueBright.close,
 		},
 		{
 			type: "ansi",
 			code: ansiStyles.red.close,
+			endCode: ansiStyles.red.close,
 		},
 		{
 			type: "ansi",
 			code: ansiStyles.underline.open,
+			endCode: ansiStyles.underline.close,
 		},
 		{
 			type: "char",
@@ -121,6 +128,7 @@ test("supports fullwidth characters", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.underline.close,
+			endCode: ansiStyles.underline.close,
 		},
 	]);
 });
@@ -163,6 +171,7 @@ test("support true color escape sequences", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.bgColor.ansi16m(255, 254, 253),
+			endCode: ansiStyles.bgColor.close,
 		},
 		{
 			type: "char",
@@ -182,6 +191,7 @@ test("support true color escape sequences", (t) => {
 		{
 			type: "ansi",
 			code: ansiStyles.bgColor.close,
+			endCode: ansiStyles.bgColor.close,
 		},
 	]);
 });
