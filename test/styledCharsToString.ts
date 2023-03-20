@@ -1,10 +1,9 @@
 import ansiStyles from "ansi-styles";
 import test from "ava";
-import chalk from "chalk";
 import { StyledChar, styledCharsToString } from "../src/styledChars.js";
 
 test("renders the least amount of styles necessary (#1)", (t) => {
-	const expected = chalk.red("foo") + "bar";
+	const expected = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
 	const styled: StyledChar[] = [
 		{
 			type: "char",

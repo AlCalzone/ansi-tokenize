@@ -1,6 +1,5 @@
 import ansiStyles from "ansi-styles";
 import test from "ava";
-import chalk from "chalk";
 import { tokenize } from "../src/tokenize.js";
 
 test("splits unformatted strings into characters", (t) => {
@@ -28,7 +27,7 @@ test("splits unformatted strings into characters", (t) => {
 });
 
 test("splits into characters and ANSI codes", (t) => {
-	const str = chalk.red("foo") + "bar";
+	const str = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
 	const tokens = tokenize(str);
 
 	const expected = [
@@ -78,7 +77,9 @@ test("splits into characters and ANSI codes", (t) => {
 });
 
 test("supports fullwidth characters", (t) => {
-	const str = chalk.red.bgBlueBright("안녕") + chalk.underline("하세");
+	const str =
+		`${ansiStyles.red.open}${ansiStyles.bgBlueBright.open}안녕${ansiStyles.bgBlueBright.close}${ansiStyles.red.close}` +
+		`${ansiStyles.underline.open}하세${ansiStyles.underline.close}`;
 
 	const tokens = tokenize(str);
 
@@ -170,7 +171,7 @@ test("supports unicode surrogate pairs", (t) => {
 });
 
 test("support true color escape sequences", (t) => {
-	const str = chalk.bgRgb(255, 254, 253)("foo");
+	const str = `${ansiStyles.bgColor.ansi16m(255, 254, 253)}foo${ansiStyles.bgColor.close}`;
 
 	const tokens = tokenize(str);
 
