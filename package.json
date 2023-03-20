@@ -21,6 +21,8 @@
     "build"
   ],
   "devDependencies": {
+    "@alcalzone/release-script": "~3.5.9",
+    "@alcalzone/release-script-plugin-license": "~3.5.9",
     "@tsconfig/node16": "^1.0.3",
     "@types/node": "16",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
@@ -43,7 +45,8 @@
     "prepare": "tsc -p tsconfig.build.json",
     "build": "tsc -p tsconfig.build.json",
     "test": "ava",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "release": "release-script"
   },
   "ava": {
     "extensions": {
