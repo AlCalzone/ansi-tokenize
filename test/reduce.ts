@@ -30,7 +30,7 @@ test("start and end codes cancel each other out", (t) => {
 			endCode: ansiStyles.underline.close,
 		},
 	];
-	t.deepEqual(reduced, expected);
+	t.is(JSON.stringify(reduced), JSON.stringify(expected));
 });
 
 test("end and start codes cancel each other out", (t) => {
@@ -65,7 +65,7 @@ test("end and start codes cancel each other out", (t) => {
 			endCode: ansiStyles.red.close,
 		},
 	];
-	t.deepEqual(reduced, expected);
+	t.is(JSON.stringify(reduced), JSON.stringify(expected));
 });
 
 test("Multiple codes of the same group cancel each other out", (t) => {
@@ -115,7 +115,7 @@ test("Multiple codes of the same group cancel each other out", (t) => {
 			endCode: ansiStyles.color.close,
 		},
 	];
-	t.deepEqual(reduced, expected);
+	t.is(JSON.stringify(reduced), JSON.stringify(expected));
 });
 
 test("A reset code cancels all other codes", (t) => {
@@ -160,5 +160,5 @@ test("A reset code cancels all other codes", (t) => {
 			endCode: ansiStyles.color.close,
 		},
 	];
-	t.deepEqual(reduced, expected);
+	t.is(JSON.stringify(reduced), JSON.stringify(expected));
 });

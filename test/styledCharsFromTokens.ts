@@ -8,7 +8,7 @@ test("remembers the active ANSI codes for each character", (t) => {
 	const str = chalk.red("foo") + "bar";
 	const styled = styledCharsFromTokens(tokenize(str));
 
-	t.deepEqual(styled, [
+	const expected = [
 		{
 			type: "char",
 			value: "f",
@@ -63,5 +63,7 @@ test("remembers the active ANSI codes for each character", (t) => {
 			fullWidth: false,
 			styles: [],
 		},
-	]);
+	];
+
+	t.is(JSON.stringify(styled), JSON.stringify(expected));
 });

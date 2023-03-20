@@ -21,7 +21,7 @@ test("returns an empty array if both sides have the same styles (#1)", (t) => {
 
 	const diff = diffAnsiCodes(from, to);
 	const expected: AnsiCode[] = [];
-	t.deepEqual(diff, expected);
+	t.is(JSON.stringify(diff), JSON.stringify(expected));
 });
 
 test("returns an empty array if both sides have the same styles (#2)", (t) => {
@@ -53,7 +53,7 @@ test("returns an empty array if both sides have the same styles (#2)", (t) => {
 
 	const diff = diffAnsiCodes(from, to);
 	const expected: AnsiCode[] = [];
-	t.deepEqual(diff, expected);
+	t.is(JSON.stringify(diff), JSON.stringify(expected));
 });
 
 test("disables/enables styles per group accordingly", (t) => {
@@ -102,5 +102,5 @@ test("disables/enables styles per group accordingly", (t) => {
 			endCode: ansiStyles.bgBlue.close,
 		},
 	];
-	t.deepEqual(diff, expected);
+	t.is(JSON.stringify(diff), JSON.stringify(expected));
 });

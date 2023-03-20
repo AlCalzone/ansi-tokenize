@@ -7,7 +7,7 @@ test("splits unformatted strings into characters", (t) => {
 	const str = "foo";
 	const tokens = tokenize(str);
 
-	t.deepEqual(tokens, [
+	const expected = [
 		{
 			type: "char",
 			value: "f",
@@ -23,14 +23,15 @@ test("splits unformatted strings into characters", (t) => {
 			value: "o",
 			fullWidth: false,
 		},
-	]);
+	];
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
 
 test("splits into characters and ANSI codes", (t) => {
 	const str = chalk.red("foo") + "bar";
 	const tokens = tokenize(str);
 
-	t.deepEqual(tokens, [
+	const expected = [
 		{
 			type: "ansi",
 			code: ansiStyles.red.open,
@@ -71,7 +72,9 @@ test("splits into characters and ANSI codes", (t) => {
 			value: "r",
 			fullWidth: false,
 		},
-	]);
+	];
+
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
 
 test("supports fullwidth characters", (t) => {
@@ -79,7 +82,7 @@ test("supports fullwidth characters", (t) => {
 
 	const tokens = tokenize(str);
 
-	t.deepEqual(tokens, [
+	const expected = [
 		{
 			type: "ansi",
 			code: ansiStyles.red.open,
@@ -130,7 +133,9 @@ test("supports fullwidth characters", (t) => {
 			code: ansiStyles.underline.close,
 			endCode: ansiStyles.underline.close,
 		},
-	]);
+	];
+
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
 
 test("supports unicode surrogate pairs", (t) => {
@@ -138,7 +143,7 @@ test("supports unicode surrogate pairs", (t) => {
 
 	const tokens = tokenize(str);
 
-	t.deepEqual(tokens, [
+	const expected = [
 		{
 			type: "char",
 			value: "a",
@@ -159,7 +164,9 @@ test("supports unicode surrogate pairs", (t) => {
 			value: "C",
 			fullWidth: false,
 		},
-	]);
+	];
+
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
 
 test("support true color escape sequences", (t) => {
@@ -167,7 +174,7 @@ test("support true color escape sequences", (t) => {
 
 	const tokens = tokenize(str);
 
-	t.deepEqual(tokens, [
+	const expected = [
 		{
 			type: "ansi",
 			code: ansiStyles.bgColor.ansi16m(255, 254, 253),
@@ -193,5 +200,7 @@ test("support true color escape sequences", (t) => {
 			code: ansiStyles.bgColor.close,
 			endCode: ansiStyles.bgColor.close,
 		},
-	]);
+	];
+
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
