@@ -5,6 +5,29 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@alcalzone/ansi-tokenize@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@alcalzone/ansi-tokenize@workspace:."
+  dependencies:
+    "@alcalzone/release-script": ~3.5.9
+    "@alcalzone/release-script-plugin-license": ~3.5.9
+    "@tsconfig/node16": ^1.0.3
+    "@types/node": 16
+    "@typescript-eslint/eslint-plugin": ^5.55.0
+    "@typescript-eslint/parser": ^5.55.0
+    ansi-styles: ^6.2.1
+    ava: ^5.2.0
+    eslint: ^8.36.0
+    eslint-config-prettier: ^8.7.0
+    eslint-plugin-prettier: ^4.2.1
+    is-fullwidth-code-point: ^4.0.0
+    prettier: ^2.8.4
+    source-map-support: ^0.5.21
+    ts-node: ^10.9.1
+    typescript: ^5.0.2
+  languageName: unknown
+  linkType: soft
+
 "@alcalzone/pak@npm:^0.8.1":
   version: 0.8.1
   resolution: "@alcalzone/pak@npm:0.8.1"
@@ -577,29 +600,6 @@ __metadata:
   checksum: ef940f2f0ced1a6347398da88a91da7930c33ecac3c77b72c5905f8b8fe402c52e6fde304ff5347f616e27a742da3f1dc76de98f6866c69251ad0b07a66776d9
   languageName: node
   linkType: hard
-
-"ansi-tokenize@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "ansi-tokenize@workspace:."
-  dependencies:
-    "@alcalzone/release-script": ~3.5.9
-    "@alcalzone/release-script-plugin-license": ~3.5.9
-    "@tsconfig/node16": ^1.0.3
-    "@types/node": 16
-    "@typescript-eslint/eslint-plugin": ^5.55.0
-    "@typescript-eslint/parser": ^5.55.0
-    ansi-styles: ^6.2.1
-    ava: ^5.2.0
-    eslint: ^8.36.0
-    eslint-config-prettier: ^8.7.0
-    eslint-plugin-prettier: ^4.2.1
-    is-fullwidth-code-point: ^4.0.0
-    prettier: ^2.8.4
-    source-map-support: ^0.5.21
-    ts-node: ^10.9.1
-    typescript: ^5.0.2
-  languageName: unknown
-  linkType: soft
 
 "anymatch@npm:~3.1.2":
   version: 3.1.3

@@ -1,4 +1,4 @@
-# ansi-tokenize
+# @alcalzone/ansi-tokenize
 
 > Efficiently modify strings containing [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors_and_Styles)
 
@@ -7,7 +7,7 @@ If you find yourself modifying styled strings repeatedly, alternatives like [`sl
 ## Install
 
 ```
-$ npm install ansi-tokenize
+$ npm install @alcalzone/ansi-tokenize
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ $ npm install ansi-tokenize
 ### Tokenize a string
 
 ```js
-import { tokenize } from "ansi-tokenize";
+import { tokenize } from "@alcalzone/ansi-tokenize";
 
 // red "foo", followed by unstyled "bar"
 const str = "\x1B[31mfoo\x1B[39mbar";
@@ -114,7 +114,7 @@ export interface StyledChar {
 Using the above example:
 
 ```js
-import { tokenize, styledCharsFromTokens } from "ansi-tokenize";
+import { tokenize, styledCharsFromTokens } from "@alcalzone/ansi-tokenize";
 
 // red "foo", followed by unstyled "bar"
 const str = "\x1B[31mfoo\x1B[39mbar";
@@ -214,7 +214,7 @@ styledChars[1].styles = [
 The `styledCharsToString` function converts a styled character array back to a string:
 
 ```js
-import { styledCharsToString } from "ansi-tokenize";
+import { styledCharsToString } from "@alcalzone/ansi-tokenize";
 
 // ... include the above code
 
