@@ -1,6 +1,6 @@
 {
   "name": "@alcalzone/ansi-tokenize",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Efficiently modify strings containing ANSI escape codes",
   "publishConfig": {
     "access": "public"
