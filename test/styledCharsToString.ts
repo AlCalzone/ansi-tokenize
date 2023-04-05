@@ -139,3 +139,25 @@ test("renders the least amount of styles necessary (#2)", (t) => {
 
 	t.is(actual, expected);
 });
+
+test("resets active styles at the end of the string", (t) => {
+	const styled: StyledChar[] = [
+		{
+			type: "char",
+			value: "h",
+			fullWidth: false,
+			styles: [
+				{
+					type: "ansi",
+					code: ansiStyles.red.open,
+					endCode: ansiStyles.red.close,
+				},
+			],
+		},
+	];
+
+	const actual = styledCharsToString(styled);
+	const expected = `${ansiStyles.red.open}h${ansiStyles.red.close}`;
+
+	t.is(actual, expected);
+});

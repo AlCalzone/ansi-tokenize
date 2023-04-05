@@ -33,6 +33,10 @@ export function styledCharsToString(chars: StyledChar[]): string {
 			ret += ansiCodesToString(diffAnsiCodes(chars[i - 1].styles, char.styles));
 		}
 		ret += char.value;
+		// reset active styles at the end of the string
+		if (i === chars.length - 1) {
+			ret += ansiCodesToString(diffAnsiCodes(char.styles, []));
+		}
 	}
 	return ret;
 }
