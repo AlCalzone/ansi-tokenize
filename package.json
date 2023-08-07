@@ -24,7 +24,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=14.10.1"
+    "node": ">=14.13.1"
   },
   "devDependencies": {
     "@alcalzone/release-script": "~3.5.9",
