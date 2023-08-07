@@ -231,6 +231,11 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+-   Fix: Reduce minimum Node.js version to `14.13.1`
+
 ### 0.1.1 (2023-04-05)
 
 -   Fix: Active styles are now correctly reset at the end of the string
