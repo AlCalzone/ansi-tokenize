@@ -231,8 +231,7 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
-
-### **WORK IN PROGRESS**
+### 0.1.2 (2023-08-07)
 
 -   Fix: Reduce minimum Node.js version to `14.13.1`
 
