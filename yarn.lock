@@ -12,7 +12,7 @@ __metadata:
     "@alcalzone/release-script": ~3.5.9
     "@alcalzone/release-script-plugin-license": ~3.5.9
     "@tsconfig/node14": ^14.1.0
-    "@types/node": ^14.18.54
+    "@types/node": ^20.5.7
     "@typescript-eslint/eslint-plugin": ^5.55.0
     "@typescript-eslint/parser": ^5.55.0
     ansi-styles: ^6.2.1
@@ -343,10 +343,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^14.18.54":
-  version: 14.18.54
-  resolution: "@types/node@npm:14.18.54"
-  checksum: 9fd66f91fcd8e9b25067f784a9c60bd710ef86a89c838c131ab2b1921398adc53b1c70d741bceed48bb2403b75c434b1bbbb255240773819cde36295c4b6abf1
+"@types/node@npm:^20.5.7":
+  version: 20.5.7
+  resolution: "@types/node@npm:20.5.7"
+  checksum: fc284c8e16ddc04569730d58e87eae349eb1c3dd9020cb79a1862d9d9add6f04e7367a236f3252db8db2572f90278e250f4cd43d27d264972b54394eaba1ed76
   languageName: node
   linkType: hard
 
