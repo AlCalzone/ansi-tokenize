@@ -205,3 +205,40 @@ test("support true color escape sequences", (t) => {
 
 	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
+
+test("supports links", (t) => {
+	const str = "\x1B]8;;https://example.com\x07foo\x1B]8;;\x07";
+
+	debugger;
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;;https://example.com\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+	];
+
+	t.is(JSON.stringify(tokens, null, 4), JSON.stringify(expected, null, 4));
+});

@@ -10,9 +10,23 @@ for (const [start, end] of ansiStyles.codes) {
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
 
+export const linkStartCodePrefix = "\x1B]8;;";
+export const linkStartCodePrefixCharCodes = linkStartCodePrefix
+	.split("")
+	.map((char) => char.charCodeAt(0));
+export const linkCodeSuffix = "\x07";
+export const linkCodeSuffixCharCode = linkCodeSuffix.charCodeAt(0);
+export const linkEndCode = `\x1B]8;;${linkCodeSuffix}`;
+
+export function getLinkStartCode(url: string): string {
+	return `${linkStartCodePrefix}${url}${linkCodeSuffix}`;
+}
+
 export function getEndCode(code: string): string {
 	if (endCodesSet.has(code)) return code;
 	if (endCodesMap.has(code)) return endCodesMap.get(code)!;
+
+	if (code.startsWith(linkStartCodePrefix)) return linkEndCode;
 
 	code = code.slice(2);
 	if (code.includes(";")) {

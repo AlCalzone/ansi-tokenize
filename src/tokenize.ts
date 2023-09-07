@@ -1,5 +1,10 @@
 import isFullwidthCodePoint from "is-fullwidth-code-point";
-import { ESCAPES, getEndCode } from "./ansiCodes.js";
+import {
+	ESCAPES,
+	getEndCode,
+	linkStartCodePrefix,
+	linkStartCodePrefixCharCodes,
+} from "./ansiCodes.js";
 
 export interface AnsiCode {
 	type: "ansi";
@@ -26,6 +31,20 @@ function findNumberIndex(str: string): number {
 	return -1;
 }
 
+function parseLinkCode(string: string, offset: number): string | undefined {
+	string = string.slice(offset);
+	for (let index = 1; index < linkStartCodePrefixCharCodes.length; index++) {
+		if (string.charCodeAt(index) !== linkStartCodePrefixCharCodes[index]) {
+			return undefined;
+		}
+	}
+	// This is a link code (with or without the URL part). Find the end of it.
+	const endIndex = string.indexOf("\x07", linkStartCodePrefix.length);
+	if (endIndex === -1) return undefined;
+
+	return string.slice(0, endIndex + 1);
+}
+
 function parseAnsiCode(string: string, offset: number): string | undefined {
 	string = string.slice(offset, offset + 19);
 	const startIndex = findNumberIndex(string);
@@ -48,7 +67,8 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 		const codePoint = str.codePointAt(index)!;
 
 		if (ESCAPES.has(codePoint)) {
-			const code = parseAnsiCode(str, index);
+			// TODO: We should probably decide on the next character ("[" or "]") which code path to take.
+			const code = parseLinkCode(str, index) || parseAnsiCode(str, index);
 			if (code) {
 				ret.push({
 					type: "ansi",
