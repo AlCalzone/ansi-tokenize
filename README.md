@@ -231,8 +231,7 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
-
-### **WORK IN PROGRESS**
+### 0.1.3 (2023-09-07)
 
 -   Fix: Support links
 
