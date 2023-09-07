@@ -1,5 +1,6 @@
 import ansiStyles from "ansi-styles";
 import test from "ava";
+import { getLinkStartCode, linkEndCode } from "../src/ansiCodes.js";
 import { diffAnsiCodes } from "../src/diff.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
@@ -100,6 +101,28 @@ test("disables/enables styles per group accordingly", (t) => {
 			type: "ansi",
 			code: ansiStyles.bgBlue.open,
 			endCode: ansiStyles.bgBlue.close,
+		},
+	];
+	t.is(JSON.stringify(diff), JSON.stringify(expected));
+});
+
+test("closes links properly", (t) => {
+	const from: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: getLinkStartCode("https://example.com"),
+			endCode: linkEndCode,
+		},
+	];
+	const to: AnsiCode[] = [];
+
+	const diff = diffAnsiCodes(from, to);
+
+	const expected: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: linkEndCode,
+			endCode: linkEndCode,
 		},
 	];
 	t.is(JSON.stringify(diff), JSON.stringify(expected));
