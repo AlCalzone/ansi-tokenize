@@ -231,6 +231,12 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+-   Breaking: Require Node.js 18+
+-   Fix: Detect emojis as being full width
+
 ### 0.1.3 (2023-09-07)
 
 -   Fix: Support links
