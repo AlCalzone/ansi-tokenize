@@ -242,3 +242,17 @@ test("supports links", (t) => {
 
 	t.is(JSON.stringify(tokens, null, 4), JSON.stringify(expected, null, 4));
 });
+
+test("correctly detects emojis as full-width", (t) => {
+	const str = "✅";
+	const tokens = tokenize(str);
+	const expected = [
+		{
+			type: "char",
+			value: "✅",
+			fullWidth: true,
+		},
+	];
+
+	t.is(JSON.stringify(tokens, null, 4), JSON.stringify(expected, null, 4));
+});
