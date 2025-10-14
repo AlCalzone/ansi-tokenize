@@ -21,7 +21,7 @@ test("start and end codes cancel each other out", (t) => {
 			endCode: ansiStyles.red.close,
 		},
 	];
-
+	
 	const reduced = reduceAnsiCodes(codes);
 	const expected: AnsiCode[] = [
 		{
@@ -51,7 +51,7 @@ test("end and start codes cancel each other out", (t) => {
 			endCode: ansiStyles.red.close,
 		},
 	];
-
+	
 	const reduced = reduceAnsiCodes(codes);
 	const expected: AnsiCode[] = [
 		{
@@ -151,7 +151,7 @@ test("A reset code cancels all other codes", (t) => {
 			endCode: ansiStyles.color.close,
 		},
 	];
-
+	
 	const reduced = reduceAnsiCodes(codes);
 	const expected: AnsiCode[] = [
 		{
@@ -161,4 +161,23 @@ test("A reset code cancels all other codes", (t) => {
 		},
 	];
 	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+});
+
+test("dim + bold are both preserved", (t) => {
+	const codes: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+	
+	const reduced = reduceAnsiCodes(codes);
+	t.is(reduced.length, 2);
+	t.is(JSON.stringify(reduced), JSON.stringify(codes));
 });
