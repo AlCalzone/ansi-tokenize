@@ -181,3 +181,26 @@ test("dim + bold are both preserved", (t) => {
 	t.is(reduced.length, 2);
 	t.is(JSON.stringify(reduced), JSON.stringify(codes));
 });
+
+test("dim + bold are both closed at the same time", (t) => {
+	const codes: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.close,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+
+	const reduced = reduceAnsiCodes(codes);
+	t.deepEqual(reduced, []);
+});

@@ -15,13 +15,8 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 			// Reset code, disable all codes
 			ret = [];
 		} else if (endCodesSet.has(code.code)) {
-			// This is an end code, remove the most recently opened matching code
-			for (let i = ret.length - 1; i >= 0; i--) {
-				if (ret[i].endCode === code.code) {
-					ret.splice(i, 1);
-					break;
-				}
-			}
+			// This is an end code, disable all matching start codes
+			ret = ret.filter((retCode) => retCode.endCode !== code.code);
 		} else {
 			// This is a start code. Remove codes it "overrides", then add it.
 			// If a new code has the same endCode, it "overrides" existing ones.
