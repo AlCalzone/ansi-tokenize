@@ -23,10 +23,20 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 			// Special case: Intensity codes (1m, 2m) can coexist (both end with 22m).
 			const isIntensityCode =
 				code.code === ansiStyles.bold.open || code.code === ansiStyles.dim.open;
-			if (!isIntensityCode) {
+
+			// Add intensity codes only if not already present
+			if (isIntensityCode) {
+				if (
+					!ret.find(
+						(retCode) => retCode.code === code.code && retCode.endCode === code.endCode,
+					)
+				) {
+					ret.push(code);
+				}
+			} else {
 				ret = ret.filter((retCode) => retCode.endCode !== code.endCode);
+				ret.push(code);
 			}
-			ret.push(code);
 		}
 	}
 	return ret;
