@@ -1,14 +1,15 @@
-# No dot-directories except github/vscode
+# No dot-directories except github/vscode/.yarn
 .*/
 !.vscode/
 !.github/
-
-# Unneeded package files
 !.yarn/
-.yarn/*.*
+
+# Yarn config and stuff - we're not using Zero-Installs
+# because that would blow up the repo size even more
+.yarn/*
 !.yarn/patches
-!.yarn/releases
 !.yarn/plugins
+!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
