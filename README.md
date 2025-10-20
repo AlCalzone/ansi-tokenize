@@ -231,6 +231,11 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+-   Fix: Prevent `dim` and `bold` modifiers from canceling each other (#37)
+
 ### 0.2.0 (2025-04-24)
 
 -   Breaking: Require Node.js 18+
