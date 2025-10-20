@@ -162,3 +162,142 @@ test("A reset code cancels all other codes", (t) => {
 	];
 	t.is(JSON.stringify(reduced), JSON.stringify(expected));
 });
+
+test("dim + bold are both preserved", (t) => {
+	const codes: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+
+	const reduced = reduceAnsiCodes(codes);
+	t.is(reduced.length, 2);
+	t.is(JSON.stringify(reduced), JSON.stringify(codes));
+});
+
+test("dim + bold do not stack infinitely", (t) => {
+	const codes: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+
+	const expected: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+
+	const reduced = reduceAnsiCodes(codes);
+	t.is(reduced.length, 2);
+	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+});
+
+test("dim + bold are both closed at the same time", (t) => {
+	const codes: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: ansiStyles.dim.open,
+			endCode: ansiStyles.dim.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.bold.close,
+			endCode: ansiStyles.bold.close,
+		},
+	];
+
+	const reduced = reduceAnsiCodes(codes);
+	t.deepEqual(reduced, []);
+});
