@@ -21,13 +21,13 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 			// This is a start code. Remove codes it "overrides", then add it.
 			// If a new code has the same endCode, it "overrides" existing ones.
 			// Special case: Intensity codes (1m, 2m) can coexist (both end with 22m).
-			const isIntensityCode = code.code === "\u001B[1m" || code.code === "\u001B[2m";
-				if (!isIntensityCode) {
-					ret = ret.filter((retCode) => retCode.endCode !== code.endCode);
-				}
-				ret.push(code);
+			const isIntensityCode =
+				code.code === ansiStyles.bold.open || code.code === ansiStyles.dim.open;
+			if (!isIntensityCode) {
+				ret = ret.filter((retCode) => retCode.endCode !== code.endCode);
 			}
+			ret.push(code);
 		}
-		return ret;
 	}
-	
+	return ret;
+}
