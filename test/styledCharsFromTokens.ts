@@ -1,9 +1,9 @@
 import ansiStyles from "ansi-styles";
-import test from "ava";
+import { expect, test } from "vitest";
 import { styledCharsFromTokens } from "../src/styledChars.js";
 import { tokenize } from "../src/tokenize.js";
 
-test("remembers the active ANSI codes for each character", (t) => {
+test("remembers the active ANSI codes for each character", () => {
 	const str = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
 	const styled = styledCharsFromTokens(tokenize(str));
 
@@ -64,5 +64,5 @@ test("remembers the active ANSI codes for each character", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(styled), JSON.stringify(expected));
+	expect(JSON.stringify(styled)).toBe(JSON.stringify(expected));
 });

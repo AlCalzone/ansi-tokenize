@@ -1,10 +1,10 @@
 import ansiStyles from "ansi-styles";
-import test from "ava";
+import { expect, test } from "vitest";
 import { getLinkStartCode, linkEndCode } from "../src/ansiCodes.js";
 import { diffAnsiCodes } from "../src/diff.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
-test("returns an empty array if both sides have the same styles (#1)", (t) => {
+test("returns an empty array if both sides have the same styles (#1)", () => {
 	const from: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -22,10 +22,10 @@ test("returns an empty array if both sides have the same styles (#1)", (t) => {
 
 	const diff = diffAnsiCodes(from, to);
 	const expected: AnsiCode[] = [];
-	t.is(JSON.stringify(diff), JSON.stringify(expected));
+	expect(JSON.stringify(diff)).toBe(JSON.stringify(expected));
 });
 
-test("returns an empty array if both sides have the same styles (#2)", (t) => {
+test("returns an empty array if both sides have the same styles (#2)", () => {
 	const from: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -54,10 +54,10 @@ test("returns an empty array if both sides have the same styles (#2)", (t) => {
 
 	const diff = diffAnsiCodes(from, to);
 	const expected: AnsiCode[] = [];
-	t.is(JSON.stringify(diff), JSON.stringify(expected));
+	expect(JSON.stringify(diff)).toBe(JSON.stringify(expected));
 });
 
-test("disables/enables styles per group accordingly", (t) => {
+test("disables/enables styles per group accordingly", () => {
 	const from: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -103,10 +103,10 @@ test("disables/enables styles per group accordingly", (t) => {
 			endCode: ansiStyles.bgBlue.close,
 		},
 	];
-	t.is(JSON.stringify(diff), JSON.stringify(expected));
+	expect(JSON.stringify(diff)).toBe(JSON.stringify(expected));
 });
 
-test("closes links properly", (t) => {
+test("closes links properly", () => {
 	const from: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -125,5 +125,5 @@ test("closes links properly", (t) => {
 			endCode: linkEndCode,
 		},
 	];
-	t.is(JSON.stringify(diff), JSON.stringify(expected));
+	expect(JSON.stringify(diff)).toBe(JSON.stringify(expected));
 });

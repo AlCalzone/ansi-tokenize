@@ -1,8 +1,8 @@
 import ansiStyles from "ansi-styles";
-import test from "ava";
+import { expect, test } from "vitest";
 import { StyledChar, styledCharsToString } from "../src/styledChars.js";
 
-test("renders the least amount of styles necessary (#1)", (t) => {
+test("renders the least amount of styles necessary (#1)", () => {
 	const expected = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
 	const styled: StyledChar[] = [
 		{
@@ -63,10 +63,10 @@ test("renders the least amount of styles necessary (#1)", (t) => {
 
 	const actual = styledCharsToString(styled);
 
-	t.is(actual, expected);
+	expect(actual).toBe(expected);
 });
 
-test("renders the least amount of styles necessary (#2)", (t) => {
+test("renders the least amount of styles necessary (#2)", () => {
 	const styled: StyledChar[] = [
 		{
 			type: "char",
@@ -137,10 +137,10 @@ test("renders the least amount of styles necessary (#2)", (t) => {
 	const actual = styledCharsToString(styled);
 	const expected = `${ansiStyles.red.open}h${ansiStyles.blue.open}e${ansiStyles.underline.open}l${ansiStyles.blue.close}${ansiStyles.bgYellow.open}l${ansiStyles.bgYellow.close}${ansiStyles.underline.close}o`;
 
-	t.is(actual, expected);
+	expect(actual).toBe(expected);
 });
 
-test("resets active styles at the end of the string", (t) => {
+test("resets active styles at the end of the string", () => {
 	const styled: StyledChar[] = [
 		{
 			type: "char",
@@ -159,5 +159,5 @@ test("resets active styles at the end of the string", (t) => {
 	const actual = styledCharsToString(styled);
 	const expected = `${ansiStyles.red.open}h${ansiStyles.red.close}`;
 
-	t.is(actual, expected);
+	expect(actual).toBe(expected);
 });

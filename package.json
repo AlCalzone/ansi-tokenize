@@ -33,15 +33,12 @@
     "@types/node": "^18.19.130",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
-    "ava": "^4.3.3",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.4",
-    "source-map-support": "^0.5.21",
-    "ts-node": "^10.9.1",
-    "tsx": "^3.12.8",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "ansi-styles": "^6.2.1",
@@ -50,14 +47,9 @@
   "scripts": {
     "prepare": "tsc -p tsconfig.build.json",
     "build": "tsc -p tsconfig.build.json",
-    "test": "NODE_OPTIONS='--loader tsx' ava",
+    "test": "vitest run",
     "lint": "eslint .",
     "release": "release-script"
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    }
   },
   "packageManager": "yarn@4.10.3"
 }

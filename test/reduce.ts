@@ -1,9 +1,9 @@
 import ansiStyles from "ansi-styles";
-import test from "ava";
+import { expect, test } from "vitest";
 import { reduceAnsiCodes } from "../src/reduce.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
-test("start and end codes cancel each other out", (t) => {
+test("start and end codes cancel each other out", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -30,10 +30,10 @@ test("start and end codes cancel each other out", (t) => {
 			endCode: ansiStyles.underline.close,
 		},
 	];
-	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(expected));
 });
 
-test("end and start codes cancel each other out", (t) => {
+test("end and start codes cancel each other out", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -65,10 +65,10 @@ test("end and start codes cancel each other out", (t) => {
 			endCode: ansiStyles.red.close,
 		},
 	];
-	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(expected));
 });
 
-test("Multiple codes of the same group cancel each other out", (t) => {
+test("Multiple codes of the same group cancel each other out", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -115,10 +115,10 @@ test("Multiple codes of the same group cancel each other out", (t) => {
 			endCode: ansiStyles.color.close,
 		},
 	];
-	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(expected));
 });
 
-test("A reset code cancels all other codes", (t) => {
+test("A reset code cancels all other codes", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -160,10 +160,10 @@ test("A reset code cancels all other codes", (t) => {
 			endCode: ansiStyles.color.close,
 		},
 	];
-	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(expected));
 });
 
-test("dim + bold are both preserved", (t) => {
+test("dim + bold are both preserved", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -178,11 +178,11 @@ test("dim + bold are both preserved", (t) => {
 	];
 
 	const reduced = reduceAnsiCodes(codes);
-	t.is(reduced.length, 2);
-	t.is(JSON.stringify(reduced), JSON.stringify(codes));
+	expect(reduced.length).toBe(2);
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(codes));
 });
 
-test("dim + bold do not stack infinitely", (t) => {
+test("dim + bold do not stack infinitely", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -275,11 +275,11 @@ test("dim + bold do not stack infinitely", (t) => {
 	];
 
 	const reduced = reduceAnsiCodes(codes);
-	t.is(reduced.length, 2);
-	t.is(JSON.stringify(reduced), JSON.stringify(expected));
+	expect(reduced.length).toBe(2);
+	expect(JSON.stringify(reduced)).toBe(JSON.stringify(expected));
 });
 
-test("dim + bold are both closed at the same time", (t) => {
+test("dim + bold are both closed at the same time", () => {
 	const codes: AnsiCode[] = [
 		{
 			type: "ansi",
@@ -299,5 +299,5 @@ test("dim + bold are both closed at the same time", (t) => {
 	];
 
 	const reduced = reduceAnsiCodes(codes);
-	t.deepEqual(reduced, []);
+	expect(reduced).toEqual([]);
 });

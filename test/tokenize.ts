@@ -1,8 +1,8 @@
 import ansiStyles from "ansi-styles";
-import test from "ava";
+import { expect, test } from "vitest";
 import { tokenize } from "../src/tokenize.js";
 
-test("splits unformatted strings into characters", (t) => {
+test("splits unformatted strings into characters", () => {
 	const str = "foo";
 	const tokens = tokenize(str);
 
@@ -23,10 +23,10 @@ test("splits unformatted strings into characters", (t) => {
 			fullWidth: false,
 		},
 	];
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("splits into characters and ANSI codes", (t) => {
+test("splits into characters and ANSI codes", () => {
 	const str = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
 	const tokens = tokenize(str);
 
@@ -73,10 +73,10 @@ test("splits into characters and ANSI codes", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("supports fullwidth characters", (t) => {
+test("supports fullwidth characters", () => {
 	const str =
 		`${ansiStyles.red.open}${ansiStyles.bgBlueBright.open}안녕${ansiStyles.bgBlueBright.close}${ansiStyles.red.close}` +
 		`${ansiStyles.underline.open}하세${ansiStyles.underline.close}`;
@@ -136,10 +136,10 @@ test("supports fullwidth characters", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("supports unicode surrogate pairs", (t) => {
+test("supports unicode surrogate pairs", () => {
 	const str = "a\uD83C\uDE00BC";
 
 	const tokens = tokenize(str);
@@ -167,10 +167,10 @@ test("supports unicode surrogate pairs", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("support 8-bit color escape sequences", (t) => {
+test("support 8-bit color escape sequences", () => {
 	const str = `${ansiStyles.color.ansi256(123)}foo${ansiStyles.color.close}`;
 
 	const tokens = tokenize(str);
@@ -203,10 +203,10 @@ test("support 8-bit color escape sequences", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("support true color escape sequences", (t) => {
+test("support true color escape sequences", () => {
 	const str = `${ansiStyles.bgColor.ansi16m(255, 254, 253)}foo${ansiStyles.bgColor.close}`;
 
 	const tokens = tokenize(str);
@@ -239,10 +239,10 @@ test("support true color escape sequences", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
-test("supports links", (t) => {
+test("supports links", () => {
 	const str = "\x1B]8;;https://example.com\x07foo\x1B]8;;\x07";
 
 	debugger;
@@ -276,10 +276,10 @@ test("supports links", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens, null, 4), JSON.stringify(expected, null, 4));
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
 });
 
-test("correctly detects emojis as full-width", (t) => {
+test("correctly detects emojis as full-width", () => {
 	const str = "✅";
 	const tokens = tokenize(str);
 	const expected = [
@@ -290,5 +290,5 @@ test("correctly detects emojis as full-width", (t) => {
 		},
 	];
 
-	t.is(JSON.stringify(tokens, null, 4), JSON.stringify(expected, null, 4));
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
 });
