@@ -170,6 +170,42 @@ test("supports unicode surrogate pairs", (t) => {
 	t.is(JSON.stringify(tokens), JSON.stringify(expected));
 });
 
+test("support 8-bit color escape sequences", (t) => {
+	const str = `${ansiStyles.color.ansi256(123)}foo${ansiStyles.color.close}`;
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: ansiStyles.color.ansi256(123),
+			endCode: ansiStyles.color.close,
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.color.close,
+			endCode: ansiStyles.color.close,
+		},
+	];
+
+	t.is(JSON.stringify(tokens), JSON.stringify(expected));
+});
+
 test("support true color escape sequences", (t) => {
 	const str = `${ansiStyles.bgColor.ansi16m(255, 254, 253)}foo${ansiStyles.bgColor.close}`;
 
