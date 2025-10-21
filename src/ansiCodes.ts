@@ -26,12 +26,20 @@ export function getEndCode(code: string): string {
 	if (endCodesSet.has(code)) return code;
 	if (endCodesMap.has(code)) return endCodesMap.get(code)!;
 
+	// We have a few special cases to handle here:
+	// Links:
 	if (code.startsWith(linkStartCodePrefix)) return linkEndCode;
 
 	code = code.slice(2);
-	if (code.includes(";")) {
-		code = code[0] + "0";
+
+	// 8-bit/24-bit colors:
+	if (code.startsWith("38")) {
+		return ansiStyles.color.close;
+	} else if (code.startsWith("48")) {
+		return ansiStyles.bgColor.close;
 	}
+
+	// Otherwise find the reset code in the ansi-styles map
 	const ret = ansiStyles.codes.get(parseInt(code, 10));
 	if (ret) {
 		return ansiStyles.color.ansi(ret);
