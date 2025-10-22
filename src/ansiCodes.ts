@@ -2,6 +2,8 @@ import ansiStyles from "ansi-styles";
 import type { AnsiCode } from "./tokenize.js";
 
 export const ESCAPES = new Set([27, 155]); // \x1b and \x9b
+export const CSI = "[".codePointAt(0)!;
+export const OSC = "]".codePointAt(0)!;
 
 export const endCodesSet = new Set<string>();
 const endCodesMap = new Map<string, string>();

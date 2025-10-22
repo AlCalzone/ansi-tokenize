@@ -292,3 +292,55 @@ test("correctly detects emojis as full-width", () => {
 
 	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
 });
+
+test("splits compound ANSI codes with multiple attributes into individual tokens", () => {
+	// bold + some 24-bit color + underline + green
+	const str = "\x1b[1;38;2;12;23;34;4;32mbaz\x1b[0m";
+	debugger;
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: ansiStyles.bold.open,
+			endCode: ansiStyles.bold.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.color.ansi16m(12, 23, 34),
+			endCode: ansiStyles.color.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.underline.open,
+			endCode: ansiStyles.underline.close,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.green.open,
+			endCode: ansiStyles.green.close,
+		},
+		{
+			type: "char",
+			value: "b",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "a",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "z",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: ansiStyles.reset.open,
+			endCode: ansiStyles.reset.close,
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
