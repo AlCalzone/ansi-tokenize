@@ -245,7 +245,6 @@ test("support true color escape sequences", () => {
 test("supports links", () => {
 	const str = "\x1B]8;;https://example.com\x07foo\x1B]8;;\x07";
 
-	debugger;
 	const tokens = tokenize(str);
 
 	const expected = [
@@ -296,7 +295,6 @@ test("correctly detects emojis as full-width", () => {
 test("splits compound ANSI codes with multiple attributes into individual tokens", () => {
 	// bold + some 24-bit color + underline + green
 	const str = "\x1b[1;38;2;12;23;34;4;32mbaz\x1b[0m";
-	debugger;
 	const tokens = tokenize(str);
 
 	const expected = [

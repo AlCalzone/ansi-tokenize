@@ -1,5 +1,5 @@
 import ansiStyles from "ansi-styles";
-import { endCodesSet } from "./ansiCodes.js";
+import { endCodesSet, isIntensityCode } from "./ansiCodes.js";
 import type { AnsiCode } from "./tokenize.js";
 
 /** Reduces the given array of ANSI codes to the minimum necessary to render with the same style */
@@ -21,11 +21,8 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 			// This is a start code. Remove codes it "overrides", then add it.
 			// If a new code has the same endCode, it "overrides" existing ones.
 			// Special case: Intensity codes (1m, 2m) can coexist (both end with 22m).
-			const isIntensityCode =
-				code.code === ansiStyles.bold.open || code.code === ansiStyles.dim.open;
-
-			// Add intensity codes only if not already present
-			if (isIntensityCode) {
+			// We only add those if the exact same code is not already present.
+			if (isIntensityCode(code)) {
 				if (
 					!ret.find(
 						(retCode) => retCode.code === code.code && retCode.endCode === code.endCode,

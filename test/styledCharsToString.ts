@@ -1,6 +1,7 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
-import { StyledChar, styledCharsToString } from "../src/styledChars.js";
+import { StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
+import { tokenize } from "../src/tokenize.js";
 
 test("renders the least amount of styles necessary (#1)", () => {
 	const expected = `${ansiStyles.red.open}foo${ansiStyles.red.close}bar`;
@@ -158,6 +159,53 @@ test("resets active styles at the end of the string", () => {
 
 	const actual = styledCharsToString(styled);
 	const expected = `${ansiStyles.red.open}h${ansiStyles.red.close}`;
+
+	expect(actual).toBe(expected);
+});
+
+test("resets between adjacent dim and bold styles", () => {
+	const dimThenBold: StyledChar[] = [
+		{
+			type: "char",
+			value: "d",
+			fullWidth: false,
+			styles: [
+				{
+					type: "ansi",
+					code: ansiStyles.dim.open,
+					endCode: ansiStyles.dim.close,
+				},
+			],
+		},
+		{
+			type: "char",
+			value: "B",
+			fullWidth: false,
+			styles: [
+				{
+					type: "ansi",
+					code: ansiStyles.bold.open,
+					endCode: ansiStyles.bold.close,
+				},
+			],
+		},
+	];
+
+	let actual = styledCharsToString(dimThenBold);
+	let expected = `${ansiStyles.dim.open}d${ansiStyles.dim.close}${ansiStyles.bold.open}B${ansiStyles.bold.close}`;
+
+	expect(actual).toBe(expected);
+
+	// Smoke test for https://github.com/AlCalzone/ansi-tokenize/issues/42
+	const dimChar = styledCharsFromTokens(
+		tokenize(`${ansiStyles.dim.open}|${ansiStyles.dim.close}`),
+	);
+	const boldChar = styledCharsFromTokens(
+		tokenize(`${ansiStyles.bold.open}B${ansiStyles.bold.close}`),
+	);
+
+	actual = styledCharsToString([...dimChar, ...boldChar]);
+	expected = `${ansiStyles.dim.open}|${ansiStyles.dim.close}${ansiStyles.bold.open}B${ansiStyles.bold.close}`;
 
 	expect(actual).toBe(expected);
 });
