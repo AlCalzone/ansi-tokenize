@@ -51,7 +51,9 @@ export function getEndCode(code: string): string {
 }
 
 export function ansiCodesToString(codes: AnsiCode[]): string {
-	return codes.map((code) => code.code).join("");
+	// Deduplicate ANSI code strings before joining
+	const deduplicated = new Set(codes.map((code) => code.code));
+	return [...deduplicated].join("");
 }
 
 /** Check if a code is an intensity code (bold or dim) - these share endCode 22m but can coexist */

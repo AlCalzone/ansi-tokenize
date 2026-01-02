@@ -209,3 +209,42 @@ test("resets between adjacent dim and bold styles", () => {
 
 	expect(actual).toBe(expected);
 });
+
+test("preserves overlapping dim and bold styles", () => {
+	const dimThenBold: StyledChar[] = [
+		{
+			type: "char",
+			value: "d",
+			fullWidth: false,
+			styles: [
+				{
+					type: "ansi",
+					code: ansiStyles.dim.open,
+					endCode: ansiStyles.dim.close,
+				},
+			],
+		},
+		{
+			type: "char",
+			value: "B",
+			fullWidth: false,
+			styles: [
+				{
+					type: "ansi",
+					code: ansiStyles.bold.open,
+					endCode: ansiStyles.bold.close,
+				},
+				{
+					type: "ansi",
+					code: ansiStyles.dim.open,
+					endCode: ansiStyles.dim.close,
+				},
+			],
+		},
+	];
+
+	const actual = styledCharsToString(dimThenBold);
+	const expected = `${ansiStyles.dim.open}d${ansiStyles.bold.open}B${ansiStyles.bold.close}`;
+
+	expect(actual).toBe(expected);
+});
