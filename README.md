@@ -231,6 +231,10 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+### 0.2.3 (2026-01-02)
+
+-   Fix: Regression when rendering adjacent `dim` and `bold` styles (#43, #44)
+
 ### 0.2.2 (2025-10-22)
 
 -   Fix: Support compound SGR sequences with multiple attributes (#39, #40)
