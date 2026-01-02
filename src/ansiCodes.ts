@@ -53,3 +53,8 @@ export function getEndCode(code: string): string {
 export function ansiCodesToString(codes: AnsiCode[]): string {
 	return codes.map((code) => code.code).join("");
 }
+
+/** Check if a code is an intensity code (bold or dim) - these share endCode 22m but can coexist */
+export function isIntensityCode(code: AnsiCode): boolean {
+	return code.code === ansiStyles.bold.open || code.code === ansiStyles.dim.open;
+}
