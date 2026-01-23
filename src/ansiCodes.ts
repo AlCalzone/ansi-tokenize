@@ -13,7 +13,11 @@ for (const [start, end] of ansiStyles.codes) {
 }
 
 export const linkStartCodePrefix = "\x1B]8;;";
+export const linkDetectionPrefix = "\x1B]8;"; // OSC 8 without the second semicolon, for detecting links with params
 export const linkStartCodePrefixCharCodes = linkStartCodePrefix
+	.split("")
+	.map((char) => char.charCodeAt(0));
+export const linkDetectionPrefixCharCodes = linkDetectionPrefix
 	.split("")
 	.map((char) => char.charCodeAt(0));
 export const linkCodeSuffix = "\x07";
@@ -30,7 +34,7 @@ export function getEndCode(code: string): string {
 
 	// We have a few special cases to handle here:
 	// Links:
-	if (code.startsWith(linkStartCodePrefix)) return linkEndCode;
+	if (code.startsWith(linkDetectionPrefix)) return linkEndCode;
 
 	code = code.slice(2);
 
