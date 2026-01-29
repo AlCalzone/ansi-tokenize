@@ -3,8 +3,8 @@ import {
 	CSI,
 	ESCAPES,
 	getEndCode,
-	linkStartCodePrefix,
-	linkStartCodePrefixCharCodes,
+	linkCodePrefix,
+	linkCodePrefixCharCodes,
 	OSC,
 } from "./ansiCodes.js";
 
@@ -25,13 +25,16 @@ export type Token = AnsiCode | Char;
 // HOT PATH: Use only basic string/char code operations for maximum performance
 function parseLinkCode(string: string, offset: number): string | undefined {
 	string = string.slice(offset);
-	for (let index = 1; index < linkStartCodePrefixCharCodes.length; index++) {
-		if (string.charCodeAt(index) !== linkStartCodePrefixCharCodes[index]) {
+	for (let index = 1; index < linkCodePrefixCharCodes.length; index++) {
+		if (string.charCodeAt(index) !== linkCodePrefixCharCodes[index]) {
 			return undefined;
 		}
 	}
+	// Find the semicolon that ends params
+	const paramsEndIndex = string.indexOf(";", linkCodePrefix.length);
+	if (paramsEndIndex === -1) return undefined;
 	// This is a link code (with or without the URL part). Find the end of it.
-	const endIndex = string.indexOf("\x07", linkStartCodePrefix.length);
+	const endIndex = string.indexOf("\x07", paramsEndIndex + 1);
 	if (endIndex === -1) return undefined;
 
 	return string.slice(0, endIndex + 1);

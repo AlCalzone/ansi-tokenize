@@ -1,5 +1,6 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
+import { getLinkStartCode } from "../src/ansiCodes.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("splits unformatted strings into characters", () => {
@@ -276,6 +277,131 @@ test("supports links", () => {
 	];
 
 	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports links with parameters", () => {
+	const str = "\x1B]8;id=1;https://example.com\x07foo\x1B]8;;\x07";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;id=1;https://example.com\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports links with multiple colon-separated parameters", () => {
+	// OSC 8 params are key=value pairs separated by colons
+	// See: https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+	const str = "\x1B]8;id=foo:line=42;https://example.com\x07bar\x1B]8;;\x07";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;id=foo:line=42;https://example.com\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+		{
+			type: "char",
+			value: "b",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "a",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "r",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports links with semicolons in URL", () => {
+	const str = "\x1B]8;id=1;https://example.com/path;param=value\x07foo\x1B]8;;\x07";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;id=1;https://example.com/path;param=value\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x07",
+			endCode: "\x1B]8;;\x07",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("getLinkStartCode generates link without params", () => {
+	const code = getLinkStartCode("https://example.com");
+	expect(code).toBe("\x1B]8;;https://example.com\x07");
+});
+
+test("getLinkStartCode generates link with single param", () => {
+	const code = getLinkStartCode("https://example.com", { id: "link1" });
+	expect(code).toBe("\x1B]8;id=link1;https://example.com\x07");
+});
+
+test("getLinkStartCode generates link with multiple params", () => {
+	const code = getLinkStartCode("https://example.com", { id: "foo", line: "42" });
+	expect(code).toBe("\x1B]8;id=foo:line=42;https://example.com\x07");
 });
 
 test("correctly detects emojis as full-width", () => {
