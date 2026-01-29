@@ -12,20 +12,19 @@ for (const [start, end] of ansiStyles.codes) {
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
 
-export const linkStartCodePrefix = "\x1B]8;;";
-export const linkDetectionPrefix = "\x1B]8;"; // OSC 8 without the second semicolon, for detecting links with params
-export const linkStartCodePrefixCharCodes = linkStartCodePrefix
-	.split("")
-	.map((char) => char.charCodeAt(0));
-export const linkDetectionPrefixCharCodes = linkDetectionPrefix
-	.split("")
-	.map((char) => char.charCodeAt(0));
+export const linkCodePrefix = "\x1B]8;"; // OSC 8 link prefix (params and URL follow)
+export const linkCodePrefixCharCodes = linkCodePrefix.split("").map((char) => char.charCodeAt(0));
 export const linkCodeSuffix = "\x07";
 export const linkCodeSuffixCharCode = linkCodeSuffix.charCodeAt(0);
 export const linkEndCode = `\x1B]8;;${linkCodeSuffix}`;
 
-export function getLinkStartCode(url: string): string {
-	return `${linkStartCodePrefix}${url}${linkCodeSuffix}`;
+export function getLinkStartCode(url: string, params?: Record<string, string>): string {
+	const paramsStr = params
+		? Object.entries(params)
+				.map(([k, v]) => `${k}=${v}`)
+				.join(":")
+		: "";
+	return `${linkCodePrefix}${paramsStr};${url}${linkCodeSuffix}`;
 }
 
 export function getEndCode(code: string): string {
@@ -34,7 +33,7 @@ export function getEndCode(code: string): string {
 
 	// We have a few special cases to handle here:
 	// Links:
-	if (code.startsWith(linkDetectionPrefix)) return linkEndCode;
+	if (code.startsWith(linkCodePrefix)) return linkEndCode;
 
 	code = code.slice(2);
 

@@ -1,5 +1,6 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
+import { getLinkStartCode } from "../src/ansiCodes.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("splits unformatted strings into characters", () => {
@@ -386,6 +387,21 @@ test("supports links with semicolons in URL", () => {
 	];
 
 	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("getLinkStartCode generates link without params", () => {
+	const code = getLinkStartCode("https://example.com");
+	expect(code).toBe("\x1B]8;;https://example.com\x07");
+});
+
+test("getLinkStartCode generates link with single param", () => {
+	const code = getLinkStartCode("https://example.com", { id: "link1" });
+	expect(code).toBe("\x1B]8;id=link1;https://example.com\x07");
+});
+
+test("getLinkStartCode generates link with multiple params", () => {
+	const code = getLinkStartCode("https://example.com", { id: "foo", line: "42" });
+	expect(code).toBe("\x1B]8;id=foo:line=42;https://example.com\x07");
 });
 
 test("correctly detects emojis as full-width", () => {
