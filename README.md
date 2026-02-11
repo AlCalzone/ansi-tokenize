@@ -231,6 +231,10 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+### 0.2.5 (2026-02-11)
+
+-   Fix: preserve grapheme clusters when tokenizing (#51)
+
 ### 0.2.4 (2026-01-29)
 
 -   Fix: Support hyperlinks with parameters (#45)
