@@ -8,6 +8,17 @@ import {
 	OSC,
 } from "./ansiCodes.js";
 
+const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+
+function isFullwidthGrapheme(grapheme: string, baseCodePoint: number): boolean {
+	if (isFullwidthCodePoint(baseCodePoint)) return true;
+	// Variation Selector 16 forces emoji presentation (2 columns wide)
+	if (grapheme.includes("\uFE0F")) return true;
+	// Regional indicator pairs form flag emoji (2 columns wide)
+	if (baseCodePoint >= 0x1f1e6 && baseCodePoint <= 0x1f1ff) return true;
+	return false;
+}
+
 export interface AnsiCode {
 	type: "ansi";
 	code: string;
@@ -115,11 +126,14 @@ function splitCompoundSGRSequences(code: string): string[] {
 
 export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY): Token[] {
 	const ret: Token[] = [];
-
-	let index = 0;
 	let visible = 0;
-	while (index < str.length) {
-		const codePoint = str.codePointAt(index)!;
+	let codeEndIndex = 0;
+
+	for (const { segment, index } of segmenter.segment(str)) {
+		// Skip segments consumed as part of an ANSI sequence
+		if (index < codeEndIndex) continue;
+
+		const codePoint = segment.codePointAt(0)!;
 
 		if (ESCAPES.has(codePoint)) {
 			let code: string | undefined;
@@ -153,22 +167,20 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 			}
 
 			if (code) {
-				index += code.length;
+				codeEndIndex = index + code.length;
 				continue;
 			}
 		}
 
-		const fullWidth = isFullwidthCodePoint(codePoint);
-		const character = String.fromCodePoint(codePoint);
+		const fullWidth = isFullwidthGrapheme(segment, codePoint);
 
 		ret.push({
 			type: "char",
-			value: character,
+			value: segment,
 			fullWidth,
 		});
 
-		index += character.length;
-		visible += fullWidth ? 2 : character.length;
+		visible += fullWidth ? 2 : 1;
 
 		if (visible >= endChar) {
 			break;

@@ -468,3 +468,104 @@ test("splits compound ANSI codes with multiple attributes into individual tokens
 
 	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
 });
+
+// Grapheme cluster tests (issue #50)
+
+test("groups Thai combining marks into grapheme clusters", () => {
+	// "สวัสดี" = 6 codepoints, but 4 grapheme clusters:
+	//   ส, วั (ว + ◌ั), ส, ดี (ด + ◌ี)
+	const str = "สวัสดี";
+	const tokens = tokenize(str);
+
+	const expected = [
+		{ type: "char", value: "ส", fullWidth: false },
+		{ type: "char", value: "วั", fullWidth: false },
+		{ type: "char", value: "ส", fullWidth: false },
+		{ type: "char", value: "ดี", fullWidth: false },
+	];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("groups ZWJ emoji sequences into single grapheme clusters", () => {
+	// 👨‍👩‍👧‍👦 = U+1F468 U+200D U+1F469 U+200D U+1F467 U+200D U+1F466
+	// = 7 codepoints, 1 grapheme cluster
+	const str = "👨\u200D👩\u200D👧\u200D👦";
+	const tokens = tokenize(str);
+
+	const expected = [{ type: "char", value: "👨\u200D👩\u200D👧\u200D👦", fullWidth: true }];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("groups emoji with variation selectors into single grapheme clusters", () => {
+	// 🌡️ = U+1F321 (thermometer) + U+FE0F (variation selector 16)
+	// = 2 codepoints, 1 grapheme cluster
+	const str = "\u{1F321}\uFE0F";
+	const tokens = tokenize(str);
+
+	const expected = [{ type: "char", value: "\u{1F321}\uFE0F", fullWidth: true }];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("groups combining accents into grapheme clusters", () => {
+	// é = e + combining acute accent = 1 grapheme
+	const str = "e\u0301";
+	const tokens = tokenize(str);
+
+	const expected = [{ type: "char", value: "e\u0301", fullWidth: false }];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("groups regional indicator flag sequences into single grapheme clusters", () => {
+	// 🇺🇸 = U+1F1FA (regional indicator U) + U+1F1F8 (regional indicator S)
+	// = 2 codepoints, 1 grapheme cluster
+	const str = "\u{1F1FA}\u{1F1F8}";
+	const tokens = tokenize(str);
+
+	const expected = [{ type: "char", value: "\u{1F1FA}\u{1F1F8}", fullWidth: true }];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("groups emoji with skin tone modifiers into single grapheme clusters", () => {
+	// 👋🏽 = U+1F44B (waving hand) + U+1F3FD (medium skin tone)
+	// = 2 codepoints, 1 grapheme cluster
+	const str = "\u{1F44B}\u{1F3FD}";
+	const tokens = tokenize(str);
+
+	const expected = [{ type: "char", value: "\u{1F44B}\u{1F3FD}", fullWidth: true }];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("handles grapheme clusters interleaved with ANSI codes", () => {
+	const str = `${ansiStyles.red.open}วั${ansiStyles.red.close}ส`;
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: ansiStyles.red.open,
+			endCode: ansiStyles.red.close,
+		},
+		{ type: "char", value: "วั", fullWidth: false },
+		{
+			type: "ansi",
+			code: ansiStyles.red.close,
+			endCode: ansiStyles.red.close,
+		},
+		{ type: "char", value: "ส", fullWidth: false },
+	];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("handles a mix of plain ASCII and multi-codepoint grapheme clusters", () => {
+	const str = "hi👨\u200D👩\u200D👧\u200D👦ok";
+	const tokens = tokenize(str);
+
+	const expected = [
+		{ type: "char", value: "h", fullWidth: false },
+		{ type: "char", value: "i", fullWidth: false },
+		{ type: "char", value: "👨\u200D👩\u200D👧\u200D👦", fullWidth: true },
+		{ type: "char", value: "o", fullWidth: false },
+		{ type: "char", value: "k", fullWidth: false },
+	];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
