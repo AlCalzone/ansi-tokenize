@@ -715,3 +715,70 @@ test("supports ST-terminated links with semicolons in URL", () => {
 
 	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
 });
+
+// Generic OSC sequence tests (non-hyperlink)
+// These are self-contained control codes with no endCode.
+
+test("emits BEL-terminated OSC 0 (set window title) as a control token", () => {
+	const tokens = tokenize("\x1B]0;My Title\x07");
+
+	expect(tokens).toHaveLength(1);
+	expect(tokens[0]).toMatchObject({
+		type: "control",
+		code: "\x1B]0;My Title\x07",
+	});
+});
+
+test("emits ST-terminated OSC 0 (set window title) as a control token", () => {
+	const tokens = tokenize("\x1B]0;My Title\x1B\\");
+
+	expect(tokens).toHaveLength(1);
+	expect(tokens[0]).toMatchObject({
+		type: "control",
+		code: "\x1B]0;My Title\x1B\\",
+	});
+});
+
+test("emits OSC 2 (set window title) as a control token", () => {
+	const tokens = tokenize("\x1B]2;Window Title\x07");
+
+	expect(tokens).toHaveLength(1);
+	expect(tokens[0]).toMatchObject({
+		type: "control",
+		code: "\x1B]2;Window Title\x07",
+	});
+});
+
+test("emits generic OSC control tokens between text", () => {
+	const tokens = tokenize("hello\x1B]0;title\x07world");
+
+	const expected = [
+		{ type: "char", value: "h", fullWidth: false },
+		{ type: "char", value: "e", fullWidth: false },
+		{ type: "char", value: "l", fullWidth: false },
+		{ type: "char", value: "l", fullWidth: false },
+		{ type: "char", value: "o", fullWidth: false },
+		{ type: "control", code: "\x1B]0;title\x07" },
+		{ type: "char", value: "w", fullWidth: false },
+		{ type: "char", value: "o", fullWidth: false },
+		{ type: "char", value: "r", fullWidth: false },
+		{ type: "char", value: "l", fullWidth: false },
+		{ type: "char", value: "d", fullWidth: false },
+	];
+	expect(tokens).toMatchObject(expected);
+});
+
+test("emits generic OSC control tokens between SGR codes", () => {
+	const str = `${ansiStyles.red.open}\x1B]0;title\x07foo${ansiStyles.red.close}`;
+	const tokens = tokenize(str);
+
+	const expected = [
+		{ type: "ansi", code: ansiStyles.red.open, endCode: ansiStyles.red.close },
+		{ type: "control", code: "\x1B]0;title\x07" },
+		{ type: "char", value: "f", fullWidth: false },
+		{ type: "char", value: "o", fullWidth: false },
+		{ type: "char", value: "o", fullWidth: false },
+		{ type: "ansi", code: ansiStyles.red.close, endCode: ansiStyles.red.close },
+	];
+	expect(tokens).toMatchObject(expected);
+});
