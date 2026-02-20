@@ -231,6 +231,12 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+-   Fix: preserve non-hyperlink OSC sequences when tokenizing (#54)
+-   Fix: support ST-terminated OSC hyperlinks (#53)
+
 ### 0.2.5 (2026-02-11)
 
 -   Fix: preserve grapheme clusters when tokenizing (#51)
