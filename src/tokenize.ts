@@ -33,13 +33,18 @@ export interface AnsiCode {
 	endCode: string;
 }
 
+export interface ControlCode {
+	type: "control";
+	code: string;
+}
+
 export interface Char {
 	type: "char";
 	value: string;
 	fullWidth: boolean;
 }
 
-export type Token = AnsiCode | Char;
+export type Token = AnsiCode | ControlCode | Char;
 
 // HOT PATH: Use only basic string/char code operations for maximum performance
 function parseLinkCode(string: string, offset: number): string | undefined {
@@ -56,6 +61,15 @@ function parseLinkCode(string: string, offset: number): string | undefined {
 	const endIndex = findOSCTerminatorIndex(string, paramsEndIndex + 1);
 	if (endIndex === -1) return undefined;
 
+	return string.slice(0, endIndex + 1);
+}
+
+// HOT PATH: Generic fallback for non-link OSC sequences (window title, notifications, etc.)
+function parseOSCSequence(string: string, offset: number): string | undefined {
+	string = string.slice(offset);
+	// Find the OSC terminator (starting after "ESC ]")
+	const endIndex = findOSCTerminatorIndex(string, 2);
+	if (endIndex === -1) return undefined;
 	return string.slice(0, endIndex + 1);
 }
 
@@ -161,14 +175,25 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 			// Peek the next code point to determine the type of ANSI sequence
 			const nextCodePoint = str.codePointAt(index + 1);
 			if (nextCodePoint === CC_OSC) {
-				// ] = operating system commands, like links
+				// ] = operating system commands
 				code = parseLinkCode(str, index);
 				if (code) {
+					// OSC 8 hyperlinks are paired codes with an endCode
 					ret.push({
 						type: "ansi",
 						code: code,
 						endCode: getEndCode(code),
 					});
+				} else {
+					// Other OSC sequences (window title, etc.) are self-contained
+					// control codes with no endCode.
+					code = parseOSCSequence(str, index);
+					if (code) {
+						ret.push({
+							type: "control",
+							code: code,
+						});
+					}
 				}
 			} else if (nextCodePoint === CC_CSI) {
 				// [ = control sequence introducer, like SGR sequences [...m
