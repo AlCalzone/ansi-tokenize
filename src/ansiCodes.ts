@@ -1,9 +1,12 @@
 import ansiStyles from "ansi-styles";
 import type { AnsiCode } from "./tokenize.js";
-
-export const ESCAPES = new Set([27, 155]); // \x1b and \x9b
-export const CSI = "[".codePointAt(0)!;
-export const OSC = "]".codePointAt(0)!;
+import {
+	linkCodePrefix,
+	linkCodeSuffix,
+	linkEndCode,
+	linkEndCodeC1ST,
+	linkEndCodeST,
+} from "./consts.js";
 
 export const endCodesSet = new Set<string>();
 const endCodesMap = new Map<string, string>();
@@ -11,12 +14,6 @@ for (const [start, end] of ansiStyles.codes) {
 	endCodesSet.add(ansiStyles.color.ansi(end));
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
-
-export const linkCodePrefix = "\x1B]8;"; // OSC 8 link prefix (params and URL follow)
-export const linkCodePrefixCharCodes = linkCodePrefix.split("").map((char) => char.charCodeAt(0));
-export const linkCodeSuffix = "\x07";
-export const linkCodeSuffixCharCode = linkCodeSuffix.charCodeAt(0);
-export const linkEndCode = `\x1B]8;;${linkCodeSuffix}`;
 
 export function getLinkStartCode(url: string, params?: Record<string, string>): string {
 	const paramsStr = params
@@ -33,7 +30,11 @@ export function getEndCode(code: string): string {
 
 	// We have a few special cases to handle here:
 	// Links:
-	if (code.startsWith(linkCodePrefix)) return linkEndCode;
+	if (code.startsWith(linkCodePrefix)) {
+		if (code.endsWith("\x1B\\")) return linkEndCodeST;
+		if (code.endsWith("\x9C")) return linkEndCodeC1ST;
+		return linkEndCode; // BEL (\x07)
+	}
 
 	code = code.slice(2);
 
