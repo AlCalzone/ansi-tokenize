@@ -569,3 +569,149 @@ test("handles a mix of plain ASCII and multi-codepoint grapheme clusters", () =>
 	];
 	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
+
+// ST-terminated OSC hyperlink tests (issue #52)
+
+test("supports ST-terminated links (ESC backslash)", () => {
+	const str = "\x1B]8;;https://example.com\x1B\\foo\x1B]8;;\x1B\\";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;;https://example.com\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports C1 ST-terminated links", () => {
+	const str = "\x1B]8;;https://example.com\x9Cfoo\x1B]8;;\x9C";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;;https://example.com\x9C",
+			endCode: "\x1B]8;;\x9C",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x9C",
+			endCode: "\x1B]8;;\x9C",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports ST-terminated links with parameters", () => {
+	const str = "\x1B]8;id=1;https://example.com\x1B\\foo\x1B]8;;\x1B\\";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;id=1;https://example.com\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});
+
+test("supports ST-terminated links with semicolons in URL", () => {
+	const str = "\x1B]8;id=1;https://example.com/path;param=value\x1B\\foo\x1B]8;;\x1B\\";
+
+	const tokens = tokenize(str);
+
+	const expected = [
+		{
+			type: "ansi",
+			code: "\x1B]8;id=1;https://example.com/path;param=value\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+		{
+			type: "char",
+			value: "f",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "char",
+			value: "o",
+			fullWidth: false,
+		},
+		{
+			type: "ansi",
+			code: "\x1B]8;;\x1B\\",
+			endCode: "\x1B]8;;\x1B\\",
+		},
+	];
+
+	expect(JSON.stringify(tokens, null, 4)).toBe(JSON.stringify(expected, null, 4));
+});

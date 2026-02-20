@@ -1,12 +1,20 @@
 import isFullwidthCodePoint from "is-fullwidth-code-point";
+import { getEndCode } from "./ansiCodes.js";
 import {
-	CSI,
+	CC_0,
+	CC_9,
+	CC_BEL,
+	CC_BACKSLASH,
+	CC_C1_ST,
+	CC_ESC,
+	CC_M,
+	CC_CSI,
+	CC_OSC,
+	CC_SEMI,
 	ESCAPES,
-	getEndCode,
 	linkCodePrefix,
 	linkCodePrefixCharCodes,
-	OSC,
-} from "./ansiCodes.js";
+} from "./consts.js";
 
 const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
@@ -45,16 +53,28 @@ function parseLinkCode(string: string, offset: number): string | undefined {
 	const paramsEndIndex = string.indexOf(";", linkCodePrefix.length);
 	if (paramsEndIndex === -1) return undefined;
 	// This is a link code (with or without the URL part). Find the end of it.
-	const endIndex = string.indexOf("\x07", paramsEndIndex + 1);
+	const endIndex = findOSCTerminatorIndex(string, paramsEndIndex + 1);
 	if (endIndex === -1) return undefined;
 
 	return string.slice(0, endIndex + 1);
 }
 
-const CC_0 = "0".charCodeAt(0);
-const CC_9 = "9".charCodeAt(0);
-const CC_SEMI = ";".charCodeAt(0);
-const CC_M = "m".charCodeAt(0);
+/**
+ * Finds the index of the last character of the first OSC terminator at or after startIndex.
+ * Recognizes BEL (\x07), C1 ST (\x9C), and ESC+backslash (\x1B\x5C).
+ * Returns -1 if no terminator is found.
+ */
+function findOSCTerminatorIndex(string: string, startIndex: number): number {
+	for (let i = startIndex; i < string.length; i++) {
+		const ch = string.charCodeAt(i);
+		if (ch === CC_BEL) return i;
+		if (ch === CC_C1_ST) return i;
+		if (ch === CC_ESC && i + 1 < string.length && string.charCodeAt(i + 1) === CC_BACKSLASH) {
+			return i + 1;
+		}
+	}
+	return -1;
+}
 
 /**
  * Scans through the given string and finds the index of the last character of an SGR sequence
@@ -140,7 +160,7 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 
 			// Peek the next code point to determine the type of ANSI sequence
 			const nextCodePoint = str.codePointAt(index + 1);
-			if (nextCodePoint === OSC) {
+			if (nextCodePoint === CC_OSC) {
 				// ] = operating system commands, like links
 				code = parseLinkCode(str, index);
 				if (code) {
@@ -150,7 +170,7 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 						endCode: getEndCode(code),
 					});
 				}
-			} else if (nextCodePoint === CSI) {
+			} else if (nextCodePoint === CC_CSI) {
 				// [ = control sequence introducer, like SGR sequences [...m
 				code = parseSGRSequence(str, index);
 				if (code) {

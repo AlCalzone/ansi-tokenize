@@ -1,6 +1,7 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
-import { getLinkStartCode, linkEndCode } from "../src/ansiCodes.js";
+import { getLinkStartCode } from "../src/ansiCodes.js";
+import { linkEndCode } from "../src/consts.js";
 import { diffAnsiCodes } from "../src/diff.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
