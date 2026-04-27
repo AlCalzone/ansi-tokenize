@@ -11,6 +11,11 @@
   },
   "license": "MIT",
   "type": "module",
+  "homepage": "https://github.com/AlCalzone/ansi-tokenize",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlCalzone/ansi-tokenize.git"
+  },
   "module": "build/index.js",
   "types": "build/index.d.ts",
   "exports": {
