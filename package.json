@@ -56,5 +56,5 @@
     "lint": "eslint .",
     "release": "release-script"
   },
-  "packageManager": "yarn@4.10.3"
+  "packageManager": "yarn@4.17.0"
 }
