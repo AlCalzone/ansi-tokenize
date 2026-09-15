@@ -78,8 +78,8 @@ export interface Char {
 
 where
 
--   `value` is the string representation of the character
--   `fullWidth` is `true` if the character is full width (takes up 2 characters in monospace, like CJK characters)
+- `value` is the string representation of the character
+- `fullWidth` is `true` if the character is full width (takes up 2 characters in monospace, like CJK characters)
 
 or an ANSI code
 
@@ -93,8 +93,8 @@ export interface AnsiCode {
 
 where
 
--   `code` is the ANSI code that starts the style
--   and `endCode` is the corresponding ANSI code that ends the style.
+- `code` is the ANSI code that starts the style
+- and `endCode` is the corresponding ANSI code that ends the style.
 
 An `AnsiCode` can also be an end code, in which case `code` and `endCode` will be the same.
 
@@ -231,47 +231,52 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+- Fix: Prevent OSC hyperlink end codes from leaking into the following styled chars (#82)
+
 ### 0.3.0 (2026-02-20)
 
--   Fix: preserve non-hyperlink OSC sequences when tokenizing (#54)
--   Fix: support ST-terminated OSC hyperlinks (#53)
+- Fix: preserve non-hyperlink OSC sequences when tokenizing (#54)
+- Fix: support ST-terminated OSC hyperlinks (#53)
 
 ### 0.2.5 (2026-02-11)
 
--   Fix: preserve grapheme clusters when tokenizing (#51)
+- Fix: preserve grapheme clusters when tokenizing (#51)
 
 ### 0.2.4 (2026-01-29)
 
--   Fix: Support hyperlinks with parameters (#45)
+- Fix: Support hyperlinks with parameters (#45)
 
 ### 0.2.3 (2026-01-02)
 
--   Fix: Regression when rendering adjacent `dim` and `bold` styles (#43, #44)
+- Fix: Regression when rendering adjacent `dim` and `bold` styles (#43, #44)
 
 ### 0.2.2 (2025-10-22)
 
--   Fix: Support compound SGR sequences with multiple attributes (#39, #40)
+- Fix: Support compound SGR sequences with multiple attributes (#39, #40)
 
 ### 0.2.1 (2025-10-20)
 
--   Fix: Prevent `dim` and `bold` modifiers from canceling each other (#37)
+- Fix: Prevent `dim` and `bold` modifiers from canceling each other (#37)
 
 ### 0.2.0 (2025-04-24)
 
--   Breaking: Require Node.js 18+
--   Fix: Detect emojis as being full width
+- Breaking: Require Node.js 18+
+- Fix: Detect emojis as being full width
 
 ### 0.1.3 (2023-09-07)
 
--   Fix: Support links
+- Fix: Support links
 
 ### 0.1.2 (2023-08-07)
 
--   Fix: Reduce minimum Node.js version to `14.13.1`
+- Fix: Reduce minimum Node.js version to `14.13.1`
 
 ### 0.1.1 (2023-04-05)
 
--   Fix: Active styles are now correctly reset at the end of the string
+- Fix: Active styles are now correctly reset at the end of the string
 
 ### 0.1.0 (2023-03-20)
 
