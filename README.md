@@ -231,8 +231,7 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
-
-### **WORK IN PROGRESS**
+### 0.3.1 (2026-09-15)
 
 - Fix: Prevent OSC hyperlink end codes from leaking into the following styled chars (#82)
 
