@@ -14,6 +14,9 @@ for (const [start, end] of ansiStyles.codes) {
 	endCodesSet.add(ansiStyles.color.ansi(end));
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
+endCodesSet.add(linkEndCode);
+endCodesSet.add(linkEndCodeST);
+endCodesSet.add(linkEndCodeC1ST);
 
 export function getLinkStartCode(url: string, params?: Record<string, string>): string {
 	const paramsStr = params
