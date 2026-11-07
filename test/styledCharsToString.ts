@@ -1,6 +1,8 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
 import { StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
+import { ansiCodesToString } from "../src/ansiCodes.js";
+import { diffAnsiCodes } from "../src/diff.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("renders the least amount of styles necessary (#1)", () => {
@@ -247,4 +249,53 @@ test("preserves overlapping dim and bold styles", () => {
 	const expected = `${ansiStyles.dim.open}d${ansiStyles.bold.open}B${ansiStyles.bold.close}`;
 
 	expect(actual).toBe(expected);
+});
+
+test("matches the full diff serializer for generated style transitions", () => {
+	// Keep the original serializer as a reference, including its exact byte order.
+	const serializeWithDiff = (chars: StyledChar[]): string => {
+		let result = "";
+		for (let i = 0; i < chars.length; i++) {
+			result += ansiCodesToString(
+				i === 0 ? chars[i].styles : diffAnsiCodes(chars[i - 1].styles, chars[i].styles),
+			);
+			result += chars[i].value;
+		}
+		if (chars.length)
+			result += ansiCodesToString(diffAnsiCodes(chars[chars.length - 1].styles, []));
+		return result;
+	};
+	let seed = 12345;
+	const next = (length: number): number => {
+		seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+		return seed % length;
+	};
+	const pieces = [
+		"abc",
+		"界",
+		"👩‍💻",
+		"\n",
+		"\x1b[31m",
+		"\x1b[34m",
+		"\x1b[1m",
+		"\x1b[2m",
+		"\x1b[22m",
+		"\x1b[0m",
+		"\x1b[38;2;10;20;30m",
+		"\x1b]8;;https://example.com\x1b\\",
+		"\x1b]8;;\x1b\\",
+	];
+	for (let sample = 0; sample < 500; sample++) {
+		let text = "";
+		for (let i = 0; i < 40; i++) text += pieces[next(pieces.length)];
+		const chars = styledCharsFromTokens(tokenize(text));
+		expect(styledCharsToString(chars)).toBe(serializeWithDiff(chars));
+		// Callers can also construct equivalent arrays independently.
+		const copied = chars.map((char) => ({
+			...char,
+			styles: char.styles.map((style) => ({ ...style })),
+		}));
+		expect(styledCharsToString(copied)).toBe(serializeWithDiff(chars));
+	}
+	expect(styledCharsToString([])).toBe("");
 });

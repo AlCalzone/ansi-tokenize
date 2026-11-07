@@ -1,7 +1,7 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
 import { linkEndCodeST } from "../src/consts.js";
-import { styledCharsFromTokens } from "../src/styledChars.js";
+import { styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("remembers the active ANSI codes for each character", () => {
@@ -101,4 +101,21 @@ test("OSC hyperlink endCode does not leak into following characters", () => {
 	];
 
 	expect(JSON.stringify(styled)).toBe(JSON.stringify(expected));
+});
+
+test("later style changes do not modify earlier runs", () => {
+	const chars = styledCharsFromTokens(tokenize("\x1b[31mab\x1b[1mcd\x1b[0mef"));
+	const original = styledCharsToString(chars.slice(0, 2));
+	chars[1].styles = [
+		...chars[1].styles,
+		{
+			type: "ansi",
+			code: ansiStyles.underline.open,
+			endCode: ansiStyles.underline.close,
+		},
+	];
+	expect(styledCharsToString(chars.slice(0, 1))).toBe("\x1b[31ma\x1b[39m");
+	expect(original).toBe("\x1b[31mab\x1b[39m");
+	expect(chars[2].styles.map((style) => style.code)).toEqual(["\x1b[31m", "\x1b[1m"]);
+	expect(chars[4].styles).toEqual([]);
 });

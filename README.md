@@ -211,6 +211,10 @@ styledChars[1].styles = [
 
 ### Serialize a styled character array back to a string
 
+Characters in the same style run may share their `styles` array. To change one
+character's styles, assign a new array (as above) instead of mutating the array in
+place. Clone a style object too if you need to change its properties.
+
 The `styledCharsToString` function converts a styled character array back to a string:
 
 ```js
