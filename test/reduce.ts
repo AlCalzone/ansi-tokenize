@@ -1,5 +1,6 @@
 import ansiStyles from "ansi-styles";
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
+import { linkEndCode, linkEndCodeC1ST, linkEndCodeST } from "../src/consts.js";
 import { reduceAnsiCodes } from "../src/reduce.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
@@ -300,4 +301,85 @@ test("dim + bold are both closed at the same time", () => {
 
 	const reduced = reduceAnsiCodes(codes);
 	expect(reduced).toEqual([]);
+});
+
+describe("hyperlinks with different terminators", () => {
+	const terminators = [
+		{ name: "BEL", terminator: "\x07", endCode: linkEndCode },
+		{ name: "ESC \\", terminator: "\x1b\\", endCode: linkEndCodeST },
+		{ name: "C1 ST", terminator: "\x9c", endCode: linkEndCodeC1ST },
+	];
+	const combinations = terminators.flatMap((first) =>
+		terminators.map((second) => ({ first, second })),
+	);
+
+	const link = (
+		url: string,
+		{ terminator, endCode }: (typeof terminators)[number],
+	): AnsiCode => ({
+		type: "ansi",
+		code: `\x1b]8;;${url}${terminator}`,
+		endCode,
+	});
+
+	test.each(combinations)(
+		"a link opened with $first.name is closed by an end code with $second.name",
+		({ first, second }) => {
+			const codes: AnsiCode[] = [
+				link("https://example.com", first),
+				{
+					type: "ansi",
+					code: ansiStyles.red.open,
+					endCode: ansiStyles.red.close,
+				},
+				{
+					type: "ansi",
+					code: second.endCode,
+					endCode: second.endCode,
+				},
+			];
+
+			const expected: AnsiCode[] = [
+				{
+					type: "ansi",
+					code: ansiStyles.red.open,
+					endCode: ansiStyles.red.close,
+				},
+			];
+			expect(reduceAnsiCodes(codes)).toEqual(expected);
+		},
+	);
+
+	test.each(terminators)(
+		"a link opened with $name and other styles do not affect each other",
+		(terminator) => {
+			const hyperlink = link("https://example.com", terminator);
+			const red: AnsiCode = {
+				type: "ansi",
+				code: ansiStyles.red.open,
+				endCode: ansiStyles.red.close,
+			};
+			const redEnd: AnsiCode = {
+				type: "ansi",
+				code: ansiStyles.red.close,
+				endCode: ansiStyles.red.close,
+			};
+
+			expect(reduceAnsiCodes([red, hyperlink])).toEqual([red, hyperlink]);
+			expect(reduceAnsiCodes([hyperlink, red])).toEqual([hyperlink, red]);
+			expect(reduceAnsiCodes([hyperlink, red, redEnd])).toEqual([hyperlink]);
+		},
+	);
+
+	test.each(combinations)(
+		"a link opened with $first.name is replaced by a link opened with $second.name",
+		({ first, second }) => {
+			const codes: AnsiCode[] = [
+				link("https://a.example", first),
+				link("https://b.example", second),
+			];
+
+			expect(reduceAnsiCodes(codes)).toEqual([link("https://b.example", second)]);
+		},
+	);
 });
