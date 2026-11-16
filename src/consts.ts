@@ -16,6 +16,7 @@ export const CC_C1_ST = C1_ST.charCodeAt(0);
 export const CC_0 = "0".charCodeAt(0);
 export const CC_9 = "9".charCodeAt(0);
 export const CC_SEMI = ";".charCodeAt(0);
+export const CC_COLON = ":".charCodeAt(0);
 export const CC_M = "m".charCodeAt(0);
 
 // Escape code points
