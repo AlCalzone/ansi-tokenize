@@ -5,6 +5,7 @@ import {
 	CC_9,
 	CC_BEL,
 	CC_BACKSLASH,
+	CC_COLON,
 	CC_C1_ST,
 	CC_ESC,
 	CC_M,
@@ -100,8 +101,8 @@ function findSGRSequenceEndIndex(str: string): number {
 		const charCode = str.charCodeAt(index);
 		// m marks the end of the SGR sequence
 		if (charCode === CC_M) return index;
-		// Digits and semicolons are valid
-		if (charCode === CC_SEMI) continue;
+		// Digits, semicolons and colons are valid
+		if (charCode === CC_SEMI || charCode === CC_COLON) continue;
 		if (charCode >= CC_0 && charCode <= CC_9) continue;
 		// Everything else is invalid
 		break;
@@ -136,6 +137,11 @@ function splitCompoundSGRSequences(code: string): string[] {
 	const ret: string[] = [];
 	for (let i = 0; i < codeParts.length; i++) {
 		const rawCode = codeParts[i];
+		// Colon-separated subparameters like `4:3` or `58:2::255:0:0` already form one code
+		if (rawCode.includes(":")) {
+			ret.push(rawCode);
+			continue;
+		}
 		// Keep 8-bit and 24-bit color codes (containing multiple ";") together
 		if (rawCode === "38" || rawCode === "48" || rawCode === "58") {
 			if (i + 2 < codeParts.length && codeParts[i + 1] === "5") {

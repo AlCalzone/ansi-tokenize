@@ -320,3 +320,12 @@ test("keeps dim active after bold is turned off", () => {
 
 	expect(actual).toBe(expected);
 });
+
+test("round-trips underline styles with colon subparameters", () => {
+	const str = `${ansiStyles.underlineCurly.open}a${ansiStyles.underlineDouble.open}b${ansiStyles.underline.close}c`;
+	const expected = `${ansiStyles.underlineCurly.open}a${ansiStyles.underlineDouble.open}b${ansiStyles.underline.close}c`;
+
+	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
+
+	expect(actual).toBe(expected);
+});
