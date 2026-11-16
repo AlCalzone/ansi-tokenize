@@ -9,7 +9,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@alcalzone/ansi-tokenize@workspace:."
   dependencies:
-    "@alcalzone/release-script": "npm:~5.2.0"
+    "@alcalzone/release-script": "npm:~5.2.1"
     "@alcalzone/release-script-plugin-license": "npm:~5.2.0"
     "@tsconfig/node18": "npm:^18.2.4"
     "@types/node": "npm:^18.19.130"
@@ -47,13 +47,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@alcalzone/release-script-plugin-changelog@npm:5.2.0":
-  version: 5.2.0
-  resolution: "@alcalzone/release-script-plugin-changelog@npm:5.2.0"
+"@alcalzone/release-script-plugin-changelog@npm:5.2.1":
+  version: 5.2.1
+  resolution: "@alcalzone/release-script-plugin-changelog@npm:5.2.1"
   dependencies:
     "@alcalzone/release-script-core": "npm:5.2.0"
     alcalzone-shared: "npm:^5.0.0"
-  checksum: 10/7decf04d3ada0f95017329ec48f45e03b9708cec90352a68202ed07dd70a0cc1b26be26cc7dbdfdb1984a8addaf1b519bcdbcdb2d926783381165d46bc6d2650
+  checksum: 10/08aeacaf6da5d6d98d88759dd11681d01b0b95e5a74e0d357416111ea09d9cf2598b98c81e31b6ba1ee19abef9dd7af441e4bff3522032b664e68e9bc58d5b6d
   languageName: node
   linkType: hard
 
@@ -110,12 +110,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@alcalzone/release-script@npm:~5.2.0":
-  version: 5.2.0
-  resolution: "@alcalzone/release-script@npm:5.2.0"
+"@alcalzone/release-script@npm:~5.2.1":
+  version: 5.2.1
+  resolution: "@alcalzone/release-script@npm:5.2.1"
   dependencies:
     "@alcalzone/release-script-core": "npm:5.2.0"
-    "@alcalzone/release-script-plugin-changelog": "npm:5.2.0"
+    "@alcalzone/release-script-plugin-changelog": "npm:5.2.1"
     "@alcalzone/release-script-plugin-exec": "npm:5.2.0"
     "@alcalzone/release-script-plugin-git": "npm:5.2.0"
     "@alcalzone/release-script-plugin-package": "npm:5.2.0"
@@ -128,7 +128,7 @@ __metadata:
     yargs: "npm:^17.4.1"
   bin:
     release-script: bin/release.js
-  checksum: 10/0b51d09c41783ef23c0de8c4f8c87848757d124af778635893d27684b6f0dab8713d7f7a5ab07de3e7fc07bff54ab8442101372259e35460f08d81448cabebe1
+  checksum: 10/f8269fd65d7dc7b31a4e0db843ce807b00317d458a9815adf42f32862044137511a295d45aab0ef4f495deeaf35788e511c962ae69541fe134e40d0dad7b0d25
   languageName: node
   linkType: hard
 

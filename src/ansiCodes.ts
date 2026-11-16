@@ -1,6 +1,7 @@
 import ansiStyles from "ansi-styles";
 import type { AnsiCode } from "./tokenize.js";
 import {
+	CC_OSC,
 	linkCodePrefix,
 	linkCodeSuffix,
 	linkEndCode,
@@ -14,9 +15,17 @@ for (const [start, end] of ansiStyles.codes) {
 	endCodesSet.add(ansiStyles.color.ansi(end));
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
-endCodesSet.add(linkEndCode);
-endCodesSet.add(linkEndCodeST);
-endCodesSet.add(linkEndCodeC1ST);
+const linkEndCodes = new Set([linkEndCode, linkEndCodeST, linkEndCodeC1ST]);
+for (const code of linkEndCodes) endCodesSet.add(code);
+
+/**
+ * Maps all hyperlink end codes to the same value, because they only differ in their terminator
+ * and any of them ends the open hyperlink. Other end codes are returned unchanged.
+ */
+export function normalizeLinkEndCode(endCode: string): string {
+	// Check for ESC ] first so SGR end codes skip the Set lookup
+	return endCode.charCodeAt(1) === CC_OSC && linkEndCodes.has(endCode) ? linkEndCode : endCode;
+}
 
 export function getLinkStartCode(url: string, params?: Record<string, string>): string {
 	const paramsStr = params

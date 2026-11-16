@@ -299,3 +299,12 @@ test("matches the full diff serializer for generated style transitions", () => {
 	}
 	expect(styledCharsToString([])).toBe("");
 });
+
+test("closes a hyperlink where an end code with a different terminator ended it", () => {
+	const str = "\x1b]8;;https://example.com\x07ab\x1b]8;;\x1b\\c";
+	const expected = "\x1b]8;;https://example.com\x07ab\x1b]8;;\x07c";
+
+	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
+
+	expect(actual).toBe(expected);
+});
