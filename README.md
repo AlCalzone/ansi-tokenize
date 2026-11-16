@@ -232,8 +232,7 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
-
-### **WORK IN PROGRESS**
+### 0.4.0 (2026-11-16)
 
 **Breaking**: Characters in the same style run now share one `styles` array, which makes `styledCharsFromTokens` and `styledCharsToString` faster.
 `StyledChar.styles` is now `readonly AnsiCode[]`. To change a character's styles, assign it a new array.
