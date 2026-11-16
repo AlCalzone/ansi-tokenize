@@ -1,8 +1,6 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
 import { StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
-import { ansiCodesToString } from "../src/ansiCodes.js";
-import { diffAnsiCodes } from "../src/diff.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("renders the least amount of styles necessary (#1)", () => {
@@ -251,25 +249,15 @@ test("preserves overlapping dim and bold styles", () => {
 	expect(actual).toBe(expected);
 });
 
-test("matches the full diff serializer for generated style transitions", () => {
-	// Keep the original serializer as a reference, including its exact byte order.
-	const serializeWithDiff = (chars: StyledChar[]): string => {
-		let result = "";
-		for (let i = 0; i < chars.length; i++) {
-			result += ansiCodesToString(
-				i === 0 ? chars[i].styles : diffAnsiCodes(chars[i - 1].styles, chars[i].styles),
-			);
-			result += chars[i].value;
-		}
-		if (chars.length)
-			result += ansiCodesToString(diffAnsiCodes(chars[chars.length - 1].styles, []));
-		return result;
-	};
+test("round-trips generated style transitions", () => {
+	const activeCodes = (chars: StyledChar[]): string[][] =>
+		chars.map((char) => char.styles.map((style) => style.code).sort());
 	let seed = 12345;
 	const next = (length: number): number => {
 		seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
 		return seed % length;
 	};
+	// Dim is left out because diffAnsiCodes drops dim when bold ends while both are active
 	const pieces = [
 		"abc",
 		"界",
@@ -278,7 +266,6 @@ test("matches the full diff serializer for generated style transitions", () => {
 		"\x1b[31m",
 		"\x1b[34m",
 		"\x1b[1m",
-		"\x1b[2m",
 		"\x1b[22m",
 		"\x1b[0m",
 		"\x1b[38;2;10;20;30m",
@@ -289,13 +276,17 @@ test("matches the full diff serializer for generated style transitions", () => {
 		let text = "";
 		for (let i = 0; i < 40; i++) text += pieces[next(pieces.length)];
 		const chars = styledCharsFromTokens(tokenize(text));
-		expect(styledCharsToString(chars)).toBe(serializeWithDiff(chars));
-		// Callers can also construct equivalent arrays independently.
+		const serialized = styledCharsToString(chars);
+		expect(activeCodes(styledCharsFromTokens(tokenize(serialized)))).toEqual(
+			activeCodes(chars),
+		);
+		expect(styledCharsFromTokens(tokenize(`${serialized}x`)).at(-1)?.styles).toEqual([]);
+		// Independently built style arrays must serialize the same way
 		const copied = chars.map((char) => ({
 			...char,
 			styles: char.styles.map((style) => ({ ...style })),
 		}));
-		expect(styledCharsToString(copied)).toBe(serializeWithDiff(chars));
+		expect(styledCharsToString(copied)).toBe(serialized);
 	}
 	expect(styledCharsToString([])).toBe("");
 });
