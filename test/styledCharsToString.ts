@@ -257,7 +257,6 @@ test("round-trips generated style transitions", () => {
 		seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
 		return seed % length;
 	};
-	// Dim is left out because diffAnsiCodes drops dim when bold ends while both are active
 	const pieces = [
 		"abc",
 		"界",
@@ -266,6 +265,7 @@ test("round-trips generated style transitions", () => {
 		"\x1b[31m",
 		"\x1b[34m",
 		"\x1b[1m",
+		"\x1b[2m",
 		"\x1b[22m",
 		"\x1b[0m",
 		"\x1b[38;2;10;20;30m",
