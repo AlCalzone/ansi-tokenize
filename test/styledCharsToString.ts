@@ -1,6 +1,6 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
-import { StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
+import { type StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("renders the least amount of styles necessary (#1)", () => {
