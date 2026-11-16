@@ -13,7 +13,7 @@ export function diffAnsiCodes(from: AnsiCode[], to: AnsiCode[]): AnsiCode[] {
 
 	// Ignore all styles in `from` that are not overwritten or removed by `to`
 	// Disable all styles in `from` that are removed in `to`
-	const removedFromStyles = from.filter((code) => {
+	const stylesToUndo = from.filter((code) => {
 		// Special case: Intensity codes (1m, 2m) can coexist (both end with 22m).
 		// We have to check the start codes for those, otherwise we might miss a reset.
 		if (isIntensityCode(code)) {
@@ -22,10 +22,10 @@ export function diffAnsiCodes(from: AnsiCode[], to: AnsiCode[]): AnsiCode[] {
 		return !endCodesInTo.has(normalizeLinkEndCode(code.endCode));
 	});
 	// 22m turns off both bold and dim, so any intensity code that stays active must be re-added
-	const undoesIntensity = removedFromStyles.some(isIntensityCode);
+	const undoesIntensity = stylesToUndo.some(isIntensityCode);
 
 	return [
-		...undoAnsiCodes(removedFromStyles),
+		...undoAnsiCodes(stylesToUndo),
 		// Add all styles in `to` that don't exist in `from`
 		...to.filter(
 			(code) =>
