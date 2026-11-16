@@ -38,6 +38,7 @@
     "@types/node": "^18.19.130",
     "oxfmt": "^0.78.0",
     "oxlint": "^1.93.0",
+    "oxlint-tsgolint": "^7.0.2007",
     "typescript": "^5.0.2",
     "vitest": "^3.2.4"
   },
