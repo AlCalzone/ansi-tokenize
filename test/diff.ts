@@ -147,3 +147,25 @@ test("replaces a link with a link that uses a different terminator without closi
 
 	expect(diffAnsiCodes(from, to)).toEqual(to);
 });
+
+test("re-adds an intensity style that stays active after the other one is removed", () => {
+	const dim: AnsiCode = {
+		type: "ansi",
+		code: ansiStyles.dim.open,
+		endCode: ansiStyles.dim.close,
+	};
+	const bold: AnsiCode = {
+		type: "ansi",
+		code: ansiStyles.bold.open,
+		endCode: ansiStyles.bold.close,
+	};
+
+	expect(diffAnsiCodes([dim, bold], [dim])).toEqual([
+		{ ...bold, code: ansiStyles.bold.close },
+		dim,
+	]);
+	expect(diffAnsiCodes([dim, bold], [bold])).toEqual([
+		{ ...dim, code: ansiStyles.dim.close },
+		bold,
+	]);
+});
