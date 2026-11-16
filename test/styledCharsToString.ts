@@ -269,3 +269,12 @@ test("round-trips underline colors", () => {
 		"\x1b[4m\x1b[58;2;255;0;0mhello\x1b[59m\x1b[24m",
 	);
 });
+
+test("keeps dim active after bold is turned off", () => {
+	const str = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb";
+	const expected = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb\x1b[22m";
+
+	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
+
+	expect(actual).toBe(expected);
+});
