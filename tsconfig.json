@@ -1,5 +1,5 @@
 {
-	"extends": "@tsconfig/node18",
+	"extends": "@tsconfig/node22",
 	"compilerOptions": {
 		"noEmit": true,
 		"declaration": false,
@@ -7,17 +7,12 @@
 		"noEmitOnError": true,
 		"outDir": "build/",
 		"removeComments": false,
-		// Avoid runtime imports that are unnecessary
-		"ignoreDeprecations": "5.0",
-		"importsNotUsedAsValues": "error",
+		"verbatimModuleSyntax": true,
 		// Required for TS debugging
 		"sourceMap": true,
 		"inlineSourceMap": false,
 		"preserveWatchOutput": true
 	},
-	"include": [
-		"src/**/*.ts",
-		"test/**/*.ts"
-	],
+	"include": ["src/**/*.ts", "test/**/*.ts"],
 	"exclude": []
 }

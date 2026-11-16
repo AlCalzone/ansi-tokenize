@@ -233,6 +233,13 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+### 0.3.2 (2026-11-16)
+
+- Perf: avoid repeated style allocations and diffs within character runs (#84)
+- Fix: keep extended underline color codes together (#90)
+- Fix: keep dim or bold active when the other intensity style is turned off (#92)
+- Fix: correctly handle hyperlinks with an end code that uses a different terminator (#88)
+
 ### 0.3.1 (2026-09-15)
 
 - Fix: Prevent OSC hyperlink end codes from leaking into the following styled chars (#82)

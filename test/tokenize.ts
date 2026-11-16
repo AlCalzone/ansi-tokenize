@@ -795,3 +795,18 @@ test("keeps 8-bit and 24-bit underline color codes together", () => {
 		{ type: "ansi", code: "\x1b[59m", endCode: "\x1b[59m" },
 	]);
 });
+
+test("keeps codes with colon subparameters together", () => {
+	const tokens = tokenize("\x1b[1;4:3;58:2::255:0:0;32mx").filter((t) => t.type === "ansi");
+
+	expect(tokens).toEqual([
+		{ type: "ansi", code: ansiStyles.bold.open, endCode: ansiStyles.bold.close },
+		{
+			type: "ansi",
+			code: ansiStyles.underlineCurly.open,
+			endCode: ansiStyles.underlineCurly.close,
+		},
+		{ type: "ansi", code: "\x1b[58:2::255:0:0m", endCode: ansiStyles.underlineColor.close },
+		{ type: "ansi", code: ansiStyles.green.open, endCode: ansiStyles.green.close },
+	]);
+});

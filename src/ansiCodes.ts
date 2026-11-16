@@ -9,16 +9,12 @@ import {
 	linkEndCodeST,
 } from "./consts.js";
 
-// ansi-styles 6 has no underline color support
-const underlineColorEndCode = "\x1b[59m";
-
 export const endCodesSet = new Set<string>();
 const endCodesMap = new Map<string, string>();
 for (const [start, end] of ansiStyles.codes) {
 	endCodesSet.add(ansiStyles.color.ansi(end));
 	endCodesMap.set(ansiStyles.color.ansi(start), ansiStyles.color.ansi(end));
 }
-endCodesSet.add(underlineColorEndCode);
 const linkEndCodes = new Set([linkEndCode, linkEndCodeST, linkEndCodeC1ST]);
 for (const code of linkEndCodes) endCodesSet.add(code);
 
@@ -60,7 +56,7 @@ export function getEndCode(code: string): string {
 	} else if (code.startsWith("48")) {
 		return ansiStyles.bgColor.close;
 	} else if (code.startsWith("58")) {
-		return underlineColorEndCode;
+		return ansiStyles.underlineColor.close;
 	}
 
 	// Otherwise find the reset code in the ansi-styles map

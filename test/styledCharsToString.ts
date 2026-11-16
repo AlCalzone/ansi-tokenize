@@ -1,6 +1,6 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
-import { StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
+import { type StyledChar, styledCharsFromTokens, styledCharsToString } from "../src/styledChars.js";
 import { tokenize } from "../src/tokenize.js";
 
 test("renders the least amount of styles necessary (#1)", () => {
@@ -315,6 +315,15 @@ test("round-trips underline colors", () => {
 test("keeps dim active after bold is turned off", () => {
 	const str = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb";
 	const expected = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb\x1b[22m";
+
+	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
+
+	expect(actual).toBe(expected);
+});
+
+test("round-trips underline styles with colon subparameters", () => {
+	const str = `${ansiStyles.underlineCurly.open}a${ansiStyles.underlineDouble.open}b${ansiStyles.underline.close}c`;
+	const expected = `${ansiStyles.underlineCurly.open}a${ansiStyles.underlineDouble.open}b${ansiStyles.underline.close}c`;
 
 	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
 
