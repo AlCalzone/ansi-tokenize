@@ -5,7 +5,7 @@
 		{
 			// Raise together with engines.node
 			matchPackageNames: ["@types/node"],
-			allowedVersions: "<19",
+			allowedVersions: "<23",
 		},
 	],
 }
