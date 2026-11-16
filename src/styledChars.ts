@@ -9,18 +9,14 @@ export interface StyledChar extends Char {
 
 export function styledCharsFromTokens(tokens: Token[]): StyledChar[] {
 	let codes: AnsiCode[] = [];
-	// The reducer returns a new array, so later ANSI tokens cannot change styles
-	// already associated with earlier characters in this run.
-	let styles: AnsiCode[] = [];
 	const ret: StyledChar[] = [];
 	for (const token of tokens) {
 		if (token.type === "ansi") {
 			codes = reduceAnsiCodesIncremental(codes, [token]);
-			styles = [...codes];
 		} else if (token.type === "char") {
 			ret.push({
 				...token,
-				styles: [...styles],
+				styles: [...codes],
 			});
 		}
 	}

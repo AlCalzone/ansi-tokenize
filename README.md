@@ -187,6 +187,7 @@ For modification simply edit the items in the array as necessary, as long as the
 
 1. The `code` and `endCode` properties must match. You can use the `ansi-styles` module to do this.
 2. The `fullWidth` property must be correct. You can use the `is-fullwidth-code-point` module to do this, or if working with multiple strings, turn those into styled char arrays first.
+3. Style objects are shared between characters. To change a style's properties, replace it with a modified copy.
 
 E.g. to make the first `o` blue and bold:
 
@@ -210,10 +211,6 @@ styledChars[1].styles = [
 ```
 
 ### Serialize a styled character array back to a string
-
-Characters in the same style run may share their `styles` array. To change one
-character's styles, assign a new array (as above) instead of mutating the array in
-place. Clone a style object too if you need to change its properties.
 
 The `styledCharsToString` function converts a styled character array back to a string:
 
