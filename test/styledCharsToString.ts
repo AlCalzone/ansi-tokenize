@@ -249,6 +249,48 @@ test("preserves overlapping dim and bold styles", () => {
 	expect(actual).toBe(expected);
 });
 
+test("round-trips generated style transitions", () => {
+	const activeCodes = (chars: StyledChar[]): string[][] =>
+		chars.map((char) => char.styles.map((style) => style.code).sort());
+	let seed = 12345;
+	const next = (length: number): number => {
+		seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+		return seed % length;
+	};
+	const pieces = [
+		"abc",
+		"界",
+		"👩‍💻",
+		"\n",
+		"\x1b[31m",
+		"\x1b[34m",
+		"\x1b[1m",
+		"\x1b[2m",
+		"\x1b[22m",
+		"\x1b[0m",
+		"\x1b[38;2;10;20;30m",
+		"\x1b]8;;https://example.com\x1b\\",
+		"\x1b]8;;\x1b\\",
+	];
+	for (let sample = 0; sample < 500; sample++) {
+		let text = "";
+		for (let i = 0; i < 40; i++) text += pieces[next(pieces.length)];
+		const chars = styledCharsFromTokens(tokenize(text));
+		const serialized = styledCharsToString(chars);
+		expect(activeCodes(styledCharsFromTokens(tokenize(serialized)))).toEqual(
+			activeCodes(chars),
+		);
+		expect(styledCharsFromTokens(tokenize(`${serialized}x`)).at(-1)?.styles).toEqual([]);
+		// Independently built style arrays must serialize the same way
+		const copied = chars.map((char) => ({
+			...char,
+			styles: char.styles.map((style) => ({ ...style })),
+		}));
+		expect(styledCharsToString(copied)).toBe(serialized);
+	}
+	expect(styledCharsToString([])).toBe("");
+});
+
 test("closes a hyperlink where an end code with a different terminator ended it", () => {
 	const str = "\x1b]8;;https://example.com\x07ab\x1b]8;;\x1b\\c";
 	const expected = "\x1b]8;;https://example.com\x07ab\x1b]8;;\x07c";
