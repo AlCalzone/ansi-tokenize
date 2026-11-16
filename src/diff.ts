@@ -1,4 +1,4 @@
-import { isIntensityCode } from "./ansiCodes.js";
+import { isIntensityCode, normalizeLinkEndCode } from "./ansiCodes.js";
 import type { AnsiCode } from "./tokenize.js";
 import { undoAnsiCodes } from "./undo.js";
 
@@ -7,7 +7,7 @@ import { undoAnsiCodes } from "./undo.js";
  * Both `from` and `to` are expected to be reduced.
  */
 export function diffAnsiCodes(from: AnsiCode[], to: AnsiCode[]): AnsiCode[] {
-	const endCodesInTo = new Set(to.map((code) => code.endCode));
+	const endCodesInTo = new Set(to.map((code) => normalizeLinkEndCode(code.endCode)));
 	const startCodesInTo = new Set(to.map((code) => code.code));
 	const startCodesInFrom = new Set(from.map((code) => code.code));
 
@@ -21,7 +21,7 @@ export function diffAnsiCodes(from: AnsiCode[], to: AnsiCode[]): AnsiCode[] {
 				if (isIntensityCode(code)) {
 					return !startCodesInTo.has(code.code);
 				}
-				return !endCodesInTo.has(code.endCode);
+				return !endCodesInTo.has(normalizeLinkEndCode(code.endCode));
 			}),
 		),
 		// Add all styles in `to` that don't exist in `from`

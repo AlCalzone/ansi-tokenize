@@ -1,7 +1,7 @@
 import ansiStyles from "ansi-styles";
 import { expect, test } from "vitest";
 import { getLinkStartCode } from "../src/ansiCodes.js";
-import { linkEndCode } from "../src/consts.js";
+import { linkEndCode, linkEndCodeST } from "../src/consts.js";
 import { diffAnsiCodes } from "../src/diff.js";
 import type { AnsiCode } from "../src/tokenize.js";
 
@@ -127,4 +127,23 @@ test("closes links properly", () => {
 		},
 	];
 	expect(JSON.stringify(diff)).toBe(JSON.stringify(expected));
+});
+
+test("replaces a link with a link that uses a different terminator without closing it first", () => {
+	const from: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: "\x1b]8;;https://a.example\x07",
+			endCode: linkEndCode,
+		},
+	];
+	const to: AnsiCode[] = [
+		{
+			type: "ansi",
+			code: "\x1b]8;;https://b.example\x1b\\",
+			endCode: linkEndCodeST,
+		},
+	];
+
+	expect(diffAnsiCodes(from, to)).toEqual(to);
 });

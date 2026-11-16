@@ -1,14 +1,6 @@
 import ansiStyles from "ansi-styles";
-import { endCodesSet, isIntensityCode } from "./ansiCodes.js";
-import { linkEndCode, linkEndCodeC1ST, linkEndCodeST } from "./consts.js";
+import { endCodesSet, isIntensityCode, normalizeLinkEndCode } from "./ansiCodes.js";
 import type { AnsiCode } from "./tokenize.js";
-
-const linkEndCodes = new Set([linkEndCode, linkEndCodeST, linkEndCodeC1ST]);
-
-/** Hyperlink end codes only differ in their terminator. Any of them ends the open hyperlink. */
-function haveSameEndCode(a: string, b: string): boolean {
-	return a === b || (linkEndCodes.has(a) && linkEndCodes.has(b));
-}
 
 /** Reduces the given array of ANSI codes to the minimum necessary to render with the same style */
 export function reduceAnsiCodes(codes: AnsiCode[]): AnsiCode[] {
@@ -24,7 +16,8 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 			ret = [];
 		} else if (endCodesSet.has(code.code)) {
 			// This is an end code, disable all matching start codes
-			ret = ret.filter((retCode) => !haveSameEndCode(retCode.endCode, code.code));
+			const endCode = normalizeLinkEndCode(code.code);
+			ret = ret.filter((retCode) => normalizeLinkEndCode(retCode.endCode) !== endCode);
 		} else {
 			// This is a start code. Remove codes it "overrides", then add it.
 			// If a new code has the same endCode, it "overrides" existing ones.
@@ -39,7 +32,8 @@ export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode
 					ret.push(code);
 				}
 			} else {
-				ret = ret.filter((retCode) => !haveSameEndCode(retCode.endCode, code.endCode));
+				const endCode = normalizeLinkEndCode(code.endCode);
+				ret = ret.filter((retCode) => normalizeLinkEndCode(retCode.endCode) !== endCode);
 				ret.push(code);
 			}
 		}
