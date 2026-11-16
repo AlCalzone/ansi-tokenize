@@ -3,12 +3,15 @@ import { endCodesSet, isIntensityCode, normalizeLinkEndCode } from "./ansiCodes.
 import type { AnsiCode } from "./tokenize.js";
 
 /** Reduces the given array of ANSI codes to the minimum necessary to render with the same style */
-export function reduceAnsiCodes(codes: AnsiCode[]): AnsiCode[] {
+export function reduceAnsiCodes(codes: readonly AnsiCode[]): AnsiCode[] {
 	return reduceAnsiCodesIncremental([], codes);
 }
 
 /** Like {@link reduceAnsiCodes}, but assumes that `codes` is already reduced. Further reductions are only done for the items in `newCodes`. */
-export function reduceAnsiCodesIncremental(codes: AnsiCode[], newCodes: AnsiCode[]): AnsiCode[] {
+export function reduceAnsiCodesIncremental(
+	codes: readonly AnsiCode[],
+	newCodes: readonly AnsiCode[],
+): AnsiCode[] {
 	let ret: AnsiCode[] = [...codes];
 	for (const code of newCodes) {
 		if (code.code === ansiStyles.reset.open) {

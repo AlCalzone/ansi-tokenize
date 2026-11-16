@@ -4,19 +4,20 @@ import { reduceAnsiCodesIncremental } from "./reduce.js";
 import type { AnsiCode, Char, Token } from "./tokenize.js";
 
 export interface StyledChar extends Char {
-	styles: AnsiCode[];
+	styles: readonly AnsiCode[];
 }
 
+/** Characters in the same style run share one `styles` array. */
 export function styledCharsFromTokens(tokens: Token[]): StyledChar[] {
-	let codes: AnsiCode[] = [];
+	let styles: readonly AnsiCode[] = [];
 	const ret: StyledChar[] = [];
 	for (const token of tokens) {
 		if (token.type === "ansi") {
-			codes = reduceAnsiCodesIncremental(codes, [token]);
+			styles = reduceAnsiCodesIncremental(styles, [token]);
 		} else if (token.type === "char") {
 			ret.push({
 				...token,
-				styles: [...codes],
+				styles,
 			});
 		}
 	}
@@ -24,7 +25,7 @@ export function styledCharsFromTokens(tokens: Token[]): StyledChar[] {
 }
 
 /** Whether two reduced style arrays have an empty diff. */
-function isSameStyle(from: AnsiCode[], to: AnsiCode[]): boolean {
+function isSameStyle(from: readonly AnsiCode[], to: readonly AnsiCode[]): boolean {
 	if (from === to) return true;
 	if (from.length !== to.length) return false;
 	for (let i = 0; i < from.length; i++) {
