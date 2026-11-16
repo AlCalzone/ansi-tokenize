@@ -257,3 +257,15 @@ test("closes a hyperlink where an end code with a different terminator ended it"
 
 	expect(actual).toBe(expected);
 });
+
+test("round-trips underline colors", () => {
+	const roundTrip = (s: string): string =>
+		styledCharsToString(styledCharsFromTokens(tokenize(s)));
+
+	expect(roundTrip("\x1b[4m\x1b[58;5;1mhello\x1b[59m world\x1b[24m")).toBe(
+		"\x1b[4m\x1b[58;5;1mhello\x1b[59m world\x1b[24m",
+	);
+	expect(roundTrip("\x1b[4;58;2;255;0;0mhello\x1b[0m")).toBe(
+		"\x1b[4m\x1b[58;2;255;0;0mhello\x1b[59m\x1b[24m",
+	);
+});

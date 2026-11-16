@@ -137,7 +137,7 @@ function splitCompoundSGRSequences(code: string): string[] {
 	for (let i = 0; i < codeParts.length; i++) {
 		const rawCode = codeParts[i];
 		// Keep 8-bit and 24-bit color codes (containing multiple ";") together
-		if (rawCode === "38" || rawCode === "48") {
+		if (rawCode === "38" || rawCode === "48" || rawCode === "58") {
 			if (i + 2 < codeParts.length && codeParts[i + 1] === "5") {
 				// 8-bit color, followed by another number
 				ret.push(codeParts.slice(i, i + 3).join(";"));

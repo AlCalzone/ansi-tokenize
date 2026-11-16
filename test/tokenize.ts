@@ -782,3 +782,16 @@ test("emits generic OSC control tokens between SGR codes", () => {
 	];
 	expect(tokens).toMatchObject(expected);
 });
+
+test("keeps 8-bit and 24-bit underline color codes together", () => {
+	const tokens = tokenize("\x1b[58;5;1;4;58;2;255;0;0mx\x1b[59m").filter(
+		(t) => t.type === "ansi",
+	);
+
+	expect(tokens).toEqual([
+		{ type: "ansi", code: "\x1b[58;5;1m", endCode: "\x1b[59m" },
+		{ type: "ansi", code: ansiStyles.underline.open, endCode: ansiStyles.underline.close },
+		{ type: "ansi", code: "\x1b[58;2;255;0;0m", endCode: "\x1b[59m" },
+		{ type: "ansi", code: "\x1b[59m", endCode: "\x1b[59m" },
+	]);
+});
