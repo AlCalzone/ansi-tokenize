@@ -257,3 +257,12 @@ test("closes a hyperlink where an end code with a different terminator ended it"
 
 	expect(actual).toBe(expected);
 });
+
+test("keeps dim active after bold is turned off", () => {
+	const str = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb";
+	const expected = "\x1b[2m\x1b[1ma\x1b[22m\x1b[2mb\x1b[22m";
+
+	const actual = styledCharsToString(styledCharsFromTokens(tokenize(str)));
+
+	expect(actual).toBe(expected);
+});
