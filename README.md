@@ -23,46 +23,46 @@ const tokens = tokenize(str);
 
 // tokens will now look like this:
 [
-	{
-		type: "ansi",
-		code: "\x1B[31m",
-		endCode: "\x1B[39m",
-	},
-	{
-		type: "char",
-		value: "f",
-		fullWidth: false,
-	},
-	{
-		type: "char",
-		value: "o",
-		fullWidth: false,
-	},
-	{
-		type: "char",
-		value: "o",
-		fullWidth: false,
-	},
-	{
-		type: "ansi",
-		code: "\x1B[39m",
-		endCode: "\x1B[39m",
-	},
-	{
-		type: "char",
-		value: "b",
-		fullWidth: false,
-	},
-	{
-		type: "char",
-		value: "a",
-		fullWidth: false,
-	},
-	{
-		type: "char",
-		value: "r",
-		fullWidth: false,
-	},
+  {
+    type: "ansi",
+    code: "\x1B[31m",
+    endCode: "\x1B[39m",
+  },
+  {
+    type: "char",
+    value: "f",
+    fullWidth: false,
+  },
+  {
+    type: "char",
+    value: "o",
+    fullWidth: false,
+  },
+  {
+    type: "char",
+    value: "o",
+    fullWidth: false,
+  },
+  {
+    type: "ansi",
+    code: "\x1B[39m",
+    endCode: "\x1B[39m",
+  },
+  {
+    type: "char",
+    value: "b",
+    fullWidth: false,
+  },
+  {
+    type: "char",
+    value: "a",
+    fullWidth: false,
+  },
+  {
+    type: "char",
+    value: "r",
+    fullWidth: false,
+  },
 ];
 ```
 
@@ -70,9 +70,9 @@ Each token is either a character
 
 ```ts
 export interface Char {
-	type: "char";
-	value: string;
-	fullWidth: boolean;
+  type: "char";
+  value: string;
+  fullWidth: boolean;
 }
 ```
 
@@ -85,9 +85,9 @@ or an ANSI code
 
 ```ts
 export interface AnsiCode {
-	type: "ansi";
-	code: string;
-	endCode: string;
+  type: "ansi";
+  code: string;
+  endCode: string;
 }
 ```
 
@@ -104,10 +104,10 @@ This representation is a 1:1 mapping of the original string, but not very useful
 
 ```ts
 export interface StyledChar {
-	type: "char";
-	value: string;
-	fullWidth: boolean;
-	styles: readonly AnsiCode[];
+  type: "char";
+  value: string;
+  fullWidth: boolean;
+  styles: readonly AnsiCode[];
 }
 ```
 
@@ -124,60 +124,60 @@ const styledChars = styledCharsFromTokens(tokens);
 
 // styledChars will contain the following:
 [
-	{
-		type: "char",
-		value: "f",
-		fullWidth: false,
-		styles: [
-			{
-				type: "ansi",
-				code: "\x1B[31m",
-				endCode: "\x1B[39m",
-			},
-		],
-	},
-	{
-		type: "char",
-		value: "o",
-		fullWidth: false,
-		styles: [
-			{
-				type: "ansi",
-				code: "\x1B[31m",
-				endCode: "\x1B[39m",
-			},
-		],
-	},
-	{
-		type: "char",
-		value: "o",
-		fullWidth: false,
-		styles: [
-			{
-				type: "ansi",
-				code: "\x1B[31m",
-				endCode: "\x1B[39m",
-			},
-		],
-	},
-	{
-		type: "char",
-		value: "b",
-		fullWidth: false,
-		styles: [],
-	},
-	{
-		type: "char",
-		value: "a",
-		fullWidth: false,
-		styles: [],
-	},
-	{
-		type: "char",
-		value: "r",
-		fullWidth: false,
-		styles: [],
-	},
+  {
+    type: "char",
+    value: "f",
+    fullWidth: false,
+    styles: [
+      {
+        type: "ansi",
+        code: "\x1B[31m",
+        endCode: "\x1B[39m",
+      },
+    ],
+  },
+  {
+    type: "char",
+    value: "o",
+    fullWidth: false,
+    styles: [
+      {
+        type: "ansi",
+        code: "\x1B[31m",
+        endCode: "\x1B[39m",
+      },
+    ],
+  },
+  {
+    type: "char",
+    value: "o",
+    fullWidth: false,
+    styles: [
+      {
+        type: "ansi",
+        code: "\x1B[31m",
+        endCode: "\x1B[39m",
+      },
+    ],
+  },
+  {
+    type: "char",
+    value: "b",
+    fullWidth: false,
+    styles: [],
+  },
+  {
+    type: "char",
+    value: "a",
+    fullWidth: false,
+    styles: [],
+  },
+  {
+    type: "char",
+    value: "r",
+    fullWidth: false,
+    styles: [],
+  },
 ];
 ```
 
@@ -197,16 +197,16 @@ import ansiStyles from "ansi-styles";
 // ... include the above code
 
 styledChars[1].styles = [
-	{
-		type: "ansi",
-		code: ansiStyles.blue.open,
-		endCode: ansiStyles.blue.close,
-	},
-	{
-		type: "ansi",
-		code: ansiStyles.bold.open,
-		endCode: ansiStyles.bold.close,
-	},
+  {
+    type: "ansi",
+    code: ansiStyles.blue.open,
+    endCode: ansiStyles.blue.close,
+  },
+  {
+    type: "ansi",
+    code: ansiStyles.bold.open,
+    endCode: ansiStyles.bold.close,
+  },
 ];
 ```
 
@@ -232,6 +232,16 @@ This automatically figures out the least amount of escape codes necessary to ach
 	Placeholder for next release:
 	### __WORK IN PROGRESS__
 -->
+
+### **WORK IN PROGRESS**
+
+**Breaking**: Characters in the same style run now share one `styles` array, which makes `styledCharsFromTokens` and `styledCharsToString` faster.
+`StyledChar.styles` is now `readonly AnsiCode[]`. To change a character's styles, assign it a new array.
+
+- Breaking: Require Node.js 22+ (#93)
+- Perf: share one readonly styles array per style run (#91)
+- Fix: Correctly parse SGR sequences with colon subparameters (#94)
+
 ### 0.3.2 (2026-11-16)
 
 - Perf: avoid repeated style allocations and diffs within character runs (#84)
