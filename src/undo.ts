@@ -2,7 +2,7 @@ import { reduceAnsiCodes } from "./reduce.js";
 import type { AnsiCode } from "./tokenize.js";
 
 /** Returns the combination of ANSI codes needed to undo the given ANSI codes */
-export function undoAnsiCodes(codes: AnsiCode[]): AnsiCode[] {
+export function undoAnsiCodes(codes: readonly AnsiCode[]): AnsiCode[] {
 	return reduceAnsiCodes(codes)
 		.reverse()
 		.map((code) => ({

@@ -6,7 +6,7 @@ import { undoAnsiCodes } from "./undo.js";
  * Returns the minimum amount of ANSI codes necessary to get from the compound style `from` to `to`.
  * Both `from` and `to` are expected to be reduced.
  */
-export function diffAnsiCodes(from: AnsiCode[], to: AnsiCode[]): AnsiCode[] {
+export function diffAnsiCodes(from: readonly AnsiCode[], to: readonly AnsiCode[]): AnsiCode[] {
 	const endCodesInTo = new Set(to.map((code) => normalizeLinkEndCode(code.endCode)));
 	const startCodesInTo = new Set(to.map((code) => code.code));
 	const startCodesInFrom = new Set(from.map((code) => code.code));

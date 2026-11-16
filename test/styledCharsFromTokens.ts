@@ -196,3 +196,10 @@ test("later style changes do not modify earlier runs", () => {
 	expect(chars[2].styles.map((style) => style.code)).toEqual(["\x1b[31m", "\x1b[1m"]);
 	expect(chars[4].styles).toEqual([]);
 });
+
+test("characters in the same style run share one styles array", () => {
+	const chars = styledCharsFromTokens(tokenize("\x1b[31mab\x1b[1mcd"));
+	expect(chars[0].styles).toBe(chars[1].styles);
+	expect(chars[1].styles).not.toBe(chars[2].styles);
+	expect(chars[2].styles).toBe(chars[3].styles);
+});

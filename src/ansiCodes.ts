@@ -72,7 +72,7 @@ export function getEndCode(code: string): string {
 	}
 }
 
-export function ansiCodesToString(codes: AnsiCode[]): string {
+export function ansiCodesToString(codes: readonly AnsiCode[]): string {
 	// Deduplicate ANSI code strings before joining
 	const deduplicated = new Set(codes.map((code) => code.code));
 	return [...deduplicated].join("");
