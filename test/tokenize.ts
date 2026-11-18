@@ -515,6 +515,27 @@ test("groups combining accents into grapheme clusters", () => {
 	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
 });
 
+test("keeps a combining mark that directly follows an ANSI code", () => {
+	// The segmenter groups the "m" ending the SGR code with the combining mark
+	const str = `${ansiStyles.red.open}\u0301a`;
+	const tokens = tokenize(str);
+
+	const expected = [
+		{ type: "ansi", code: ansiStyles.red.open, endCode: ansiStyles.red.close },
+		{ type: "char", value: "\u0301", fullWidth: false },
+		{ type: "char", value: "a", fullWidth: false },
+	];
+	expect(JSON.stringify(tokens)).toBe(JSON.stringify(expected));
+});
+
+test("keeps a combining mark that directly follows a hyperlink code", () => {
+	const str = `${getLinkStartCode("https://example.com")}\u0301a`;
+	const tokens = tokenize(str);
+
+	const chars = tokens.flatMap((token) => (token.type === "char" ? [token.value] : []));
+	expect(chars).toEqual(["\u0301", "a"]);
+});
+
 test("groups regional indicator flag sequences into single grapheme clusters", () => {
 	// 🇺🇸 = U+1F1FA (regional indicator U) + U+1F1F8 (regional indicator S)
 	// = 2 codepoints, 1 grapheme cluster
