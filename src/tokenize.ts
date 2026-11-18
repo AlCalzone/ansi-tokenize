@@ -169,9 +169,16 @@ export function tokenize(str: string, endChar: number = Number.POSITIVE_INFINITY
 	let visible = 0;
 	let codeEndIndex = 0;
 
-	for (const { segment, index } of segmenter.segment(str)) {
-		// Skip segments consumed as part of an ANSI sequence
-		if (index < codeEndIndex) continue;
+	for (let { segment, index } of segmenter.segment(str)) {
+		if (index < codeEndIndex) {
+			// Skip segments consumed as part of an ANSI sequence
+			if (index + segment.length <= codeEndIndex) continue;
+
+			// The segmenter can group the final byte of a code with what follows it,
+			// e.g. the "m" of an SGR sequence and a combining mark. Keep the rest.
+			segment = segment.slice(codeEndIndex - index);
+			index = codeEndIndex;
+		}
 
 		const codePoint = segment.codePointAt(0)!;
 
